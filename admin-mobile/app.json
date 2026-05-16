@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "  Admin",
+    "slug": "--admin",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "${colorPrimary}"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "${colorPrimary}"
+      },
+      "package": "com..admin"
+    },
+    "ios": {
+      "bundleIdentifier": "com..admin",
+      "supportsTablet": true
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-notifications"
+    ],
+    "extra": {
+      "apiUrl": "http://192.168.100.181:5000/api",
+      "appKey": "373a37a2d500dd9bafe38bab7c7be02d9658bf2dc4ae88bb418409784a77f863c04e970866eb138c9e7cea257c1550e9"
+    }
+  }
+}

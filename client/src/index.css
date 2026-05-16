@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary:   #f97316;   /* orange accent – matches nav & buttons */
+  --secondary: #9c155f;   /* dark navy – matches top bar */
+  --bg:        #f4f6f9;
+  --text:      #9c155f;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  padding: 11px 28px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  transition: background 0.2s, transform 0.15s;
+  font-family: inherit;
+}
+.btn-primary:hover { background: #ea6500; transform: translateY(-1px); }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--secondary);
+  border: 2px solid var(--secondary);
+  padding: 10px 26px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.btn-secondary:hover { background: var(--secondary); color: #fff; }
+
+@keyframes shimmer {
+  0%  { background-position: 200% 0 }
+  100%{ background-position: -200% 0 }
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-btn   { display: flex !important; }
+  .desktop-nav-item  { display: none !important; }
+  .products-layout   { flex-wrap: wrap !important; }
+  .products-layout aside { width: 100% !important; position: static !important; display: none !important; }
+  .mobile-filter-btn { display: flex !important; }
+}
