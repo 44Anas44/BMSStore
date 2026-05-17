@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
   if (minPrice || maxPrice) filter.price = {}
   if (minPrice) filter.price.$gte = +minPrice
   if (maxPrice) filter.price.$lte = +maxPrice
-  if (search) filter.$text = { $search: search }
+  if (search) filter.name = { $regex: new RegExp(search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i') }
 
   const sortMap = {
     'price-asc':  { price: 1 },
