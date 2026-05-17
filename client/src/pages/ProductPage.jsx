@@ -1,75 +1,174 @@
-import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { productsApi } from '../lib/api'
-import { useCartStore } from '../store/cartStore'
-import toast from 'react-hot-toast'
+import React, { useEffect, useState, useCallback } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import ProductCard from '../components/ProductCard'
+import { productsApi, categoriesApi, brandsApi } from '../lib/api'
 
-export default function ProductPage() {
-  const { id } = useParams()
-  const [product, setProduct] = useState(null)
-  const [imgIdx, setImgIdx] = useState(0)
-  const [qty, setQty] = useState(1)
-  const addItem = useCartStore(s => s.addItem)
+const inp = { width:'100%', padding:'9px 12px', border:'1px solid #e5e5e5', borderRadius:8, fontSize:13, fontFamily:'inherit', outline:'none', background:'#fff', color:'#1a1a1a', boxSizing:'border-box' }
+const lbl = { display:'block', fontSize:11, fontWeight:600, color:'#aaa', textTransform:'uppercase', letterSpacing:0.6, marginBottom:6 }
 
-  useEffect(() => { productsApi.getById(id).then(setProduct).catch(console.error) }, [id])
+function FilterPanel({ filters, categories, brands, set, clear, total, closeDrawer }) {
+  return (
+    <div style={{ border:'1px solid #eee', borderRadius:14, padding:'18px 16px', background:'#fff' }}>
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
+        <p style={{ fontWeight:700, fontSize:14, color:'#1a1a1a' }}>Filters</p>
+        <button onClick={clear} style={{ background:'none', border:'none', fontSize:12, color:'#f97316', fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>Clear all</button>
+      </div>
+      <div style={{ position:'relative', marginBottom:16 }}>
+        <input placeholder="Search products..." value={filters.search} onChange={e => set('search', e.target.value)} style={{ ...inp, paddingLeft:32 }}/>
+        <svg style={{ position:'absolute', left:10, top:'50%', transform:'translateY(-50%)' }} width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#bbb" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+      <label style={lbl}>Category</label>
+      <select value={filters.category} onChange={e => set('category', e.target.value)} style={{ ...inp, marginBottom:14, cursor:'pointer' }}>
+        <option value="">All categories</option>
+        {categories.map(c => <option key={c._id} value={c._id}>{c.parent?'  └ ':''}{c.name}</option>)}
+      </select>
+      <label style={lbl}>Brand</label>
+      <select value={filters.brand} onChange={e => set('brand', e.target.value)} style={{ ...inp, marginBottom:14, cursor:'pointer' }}>
+        <option value="">All brands</option>
+        {brands.map(b => <option key={b._id} value={b._id}>{b.name}</option>)}
+      </select>
+      <label style={lbl}>Price Range</label>
+      <div style={{ display:'flex', gap:6, marginBottom:14 }}>
+        <input type="number" min="0" placeholder="Min" value={filters.minPrice} onChange={e => set('minPrice', e.target.value)} style={{ ...inp, flex:1, width:0 }}/>
+        <span style={{ color:'#ccc', lineHeight:'38px', flexShrink:0 }}>—</span>
+        <input type="number" min="0" placeholder="Max" value={filters.maxPrice} onChange={e => set('maxPrice', e.target.value)} style={{ ...inp, flex:1, width:0 }}/>
+      </div>
+      <label style={lbl}>Sort By</label>
+      <select value={filters.sort} onChange={e => set('sort', e.target.value)} style={{ ...inp, cursor:'pointer' }}>
+        <option value="default">Default</option>
+        <option value="newest">Newest</option>
+        <option value="popular">Most Popular</option>
+        <option value="price-asc">Price: Low → High</option>
+        <option value="price-desc">Price: High → Low</option>
+      </select>
+    </div>
+  )
+}
 
-  if (!product) return <div style={{ textAlign: 'center', padding: 80 }}>Loading...</div>
-  const imgs = product.images?.length ? product.images : ['https://placehold.co/600x600?text=No+Image']
+export default function ProductsPage() {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [products,   setProducts]   = useState([])
+  const [total,      setTotal]      = useState(0)
+  const [categories, setCategories] = useState([])
+  const [brands,     setBrands]     = useState([])
+  const [loading,    setLoading]    = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [filters, setFilters] = useState({
+    category: searchParams.get('category') || '',
+    brand:    searchParams.get('brand')    || '',
+    minPrice: searchParams.get('minPrice') || '',
+    maxPrice: searchParams.get('maxPrice') || '',
+    sort:     searchParams.get('sort')     || 'default',
+    search:   searchParams.get('search')   || '',
+  })
+
+  useEffect(() => {
+    categoriesApi.getAll().then(setCategories).catch(console.error)
+    brandsApi.getAll().then(setBrands).catch(console.error)
+  }, [])
+
+  const set = (k, v) => {
+    const next = { ...filters, [k]: v }
+    setFilters(next)
+    const p = {}
+    Object.entries(next).forEach(([key, val]) => { if (val && val !== 'default') p[key] = val })
+    setSearchParams(p, { replace: true })
+  }
+
+  const load = useCallback(() => {
+    setLoading(true)
+    const params = Object.fromEntries(Object.entries(filters).filter(([,v]) => v && v !== 'default'))
+    productsApi.getAll(params)
+      .then(d => { setProducts(d.products); setTotal(d.total) })
+      .catch(console.error)
+      .finally(() => setLoading(false))
+  }, [filters])
+
+  useEffect(() => { load() }, [load])
+
+  const clear = () => { setFilters({ category:'', brand:'', minPrice:'', maxPrice:'', sort:'default', search:'' }); setSearchParams({}, { replace:true }) }
+
+  const activeFilters = Object.entries(filters).filter(([k,v]) => v && v !== 'default' && k !== 'sort').length
 
   return (
-    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '40px 24px' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'start' }}>
+    <div style={{ maxWidth:1200, margin:'0 auto', padding:'24px 16px' }}>
+      <style>{`
+        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+        .pr-drawer-overlay { display:none }
+        .pr-sidebar { display:block }
+        @media(max-width:768px) {
+          .pr-layout { grid-template-columns: 1fr !important }
+          .pr-sidebar { display:none }
+          .pr-drawer-overlay { display:block; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:300 }
+          .pr-drawer { position:fixed; bottom:0; left:0; right:0; background:#fff; border-radius:20px 20px 0 0; padding:20px 16px 32px; z-index:301; max-height:88vh; overflow-y:auto; box-shadow:0 -8px 32px rgba(0,0,0,.15) }
+          .pr-filter-fab { display:flex !important }
+        }
+        .pr-filter-fab { display:none; position:fixed; bottom:24px; right:20px; z-index:200; align-items:center; gap:8px; background:#9c155f; color:#fff; border:none; border-radius:50px; padding:12px 20px; font-size:14px; font-weight:700; font-family:inherit; cursor:pointer; box-shadow:0 4px 20px rgba(156,21,95,0.4) }
+      `}</style>
+
+      <div style={{ marginBottom:20, display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:12, flexWrap:'wrap' }}>
         <div>
-          <img src={imgs[imgIdx]} alt={product.name} style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 14, marginBottom: 12 }} />
-          {imgs.length > 1 && (
-            <div style={{ display: 'flex', gap: 8 }}>
-              {imgs.map((img, i) => (
-                <img key={i} src={img} alt="" onClick={() => setImgIdx(i)}
-                  style={{ width: 70, height: 70, objectFit: 'cover', borderRadius: 8, cursor: 'pointer', border: i===imgIdx ? '2px solid var(--primary)' : '2px solid transparent', opacity: i===imgIdx ? 1 : 0.6 }} />
-              ))}
+          <div style={{ display:'inline-block', background:'var(--primary)', color:'#fff', fontSize:11, fontWeight:700, padding:'3px 12px', borderRadius:20, letterSpacing:0.8, textTransform:'uppercase', marginBottom:8 }}>Store</div>
+          <h1 style={{ fontSize:22, fontWeight:800, color:'#1a1a1a', letterSpacing:-0.3 }}>
+            All Products
+            <span style={{ fontSize:14, fontWeight:400, color:'#aaa', marginLeft:8 }}>({total})</span>
+          </h1>
+        </div>
+        <select value={filters.sort} onChange={e => set('sort', e.target.value)}
+          style={{ ...inp, width:'auto', minWidth:160, cursor:'pointer', flexShrink:0 }}>
+          <option value="default">Sort: Default</option>
+          <option value="newest">Newest</option>
+          <option value="popular">Most Popular</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
+        </select>
+      </div>
+
+      <div className="pr-layout" style={{ display:'grid', gridTemplateColumns:'220px 1fr', gap:24, alignItems:'start' }}>
+        <aside className="pr-sidebar" style={{ position:'sticky', top:80 }}>
+          <FilterPanel filters={filters} categories={categories} brands={brands} set={set} clear={clear} total={total} />
+        </aside>
+
+        <div>
+          {loading ? (
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(170px,1fr))', gap:16 }}>
+              {[...Array(8)].map((_,i) => <div key={i} style={{ height:300, borderRadius:12, background:'linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%)', backgroundSize:'200% 100%', animation:'shimmer 1.4s infinite' }}/>)}
+            </div>
+          ) : products.length === 0 ? (
+            <div style={{ textAlign:'center', padding:'80px 0', color:'#bbb' }}>
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ddd" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ display:'block', margin:'0 auto 16px' }}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <p style={{ fontSize:16, color:'#aaa' }}>No products found</p>
+              <button onClick={clear} style={{ marginTop:12, background:'none', border:'1px solid #ddd', borderRadius:8, padding:'8px 20px', cursor:'pointer', fontSize:13, fontFamily:'inherit', color:'#888' }}>Clear Filters</button>
+            </div>
+          ) : (
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(170px,1fr))', gap:16 }}>
+              {products.map(p => <ProductCard key={p._id} product={p}/>)}
             </div>
           )}
         </div>
-        <div>
-          <p style={{ color: '#888', marginBottom: 6 }}>{product.brand?.name}</p>
-          <h1 style={{ fontSize: 30, fontWeight: 800, marginBottom: 12 }}>{product.name}</h1>
-          <p style={{ color: '#555', marginBottom: 20, lineHeight: 1.7 }}>{product.description}</p>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 24 }}>
-            <span style={{ fontSize: 32, fontWeight: 800, color: 'var(--primary)' }}>{product.price.toFixed(2)} TND</span>
-            {product.comparePrice > product.price && (
-              <span style={{ textDecoration: 'line-through', color: '#bbb', fontSize: 18 }}>{product.comparePrice.toFixed(2)}</span>
-            )}
-          </div>
-          <p style={{ fontSize: 13, color: '#888', marginBottom: 6 }}>Category: {product.category?.name || '—'}</p>
-          {product.stock > 0 ? (
-            <p style={{ fontSize: 13, color: '#22c55e', fontWeight: 600, marginBottom: 24 }}>✓ In stock: {product.stock} available</p>
-          ) : (
-            <p style={{ fontSize: 13, color: '#ef4444', fontWeight: 600, marginBottom: 24 }}>✗ Out of stock</p>
-          )}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-            <button onClick={() => setQty(q => Math.max(1, q - 1))} style={{ width: 36, height: 36, borderRadius: 8, border: '1px solid #ddd', cursor: 'pointer', fontSize: 18, background: '#fff' }}>−</button>
-            <span style={{ fontSize: 18, fontWeight: 600, minWidth: 32, textAlign: 'center' }}>{qty}</span>
-            <button onClick={() => setQty(q => Math.min(product.stock || 1, q + 1))} style={{ width: 36, height: 36, borderRadius: 8, border: '1px solid #ddd', cursor: 'pointer', fontSize: 18, background: '#fff' }}>+</button>
-          </div>
-          {product.stock === 0 ? (
-            <button className="btn-primary" style={{ width: '100%', fontSize: 16, padding: '14px', opacity: 0.5, cursor: 'not-allowed' }} disabled>
-              Out of Stock
-            </button>
-          ) : (
-            <button className="btn-primary" style={{ width: '100%', fontSize: 16, padding: '14px' }}
-              onClick={() => {
-                const result = addItem(product, qty)
-                if (result?.clamped) {
-                  toast.success(`Added to cart (only ${result.available} available — quantity adjusted)`)
-                } else {
-                  toast.success(`${qty}× added to cart!`)
-                }
-              }}>
-              🛒 Add to Cart
-            </button>
-          )}
-        </div>
       </div>
+
+      <button className="pr-filter-fab" onClick={() => setDrawerOpen(true)}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="12" y1="18" x2="20" y2="18"/></svg>
+        Filters {activeFilters > 0 && <span style={{ background:'#f97316', borderRadius:50, padding:'1px 7px', fontSize:11 }}>{activeFilters}</span>}
+      </button>
+
+      {drawerOpen && (
+        <>
+          <div className="pr-drawer-overlay" onClick={() => setDrawerOpen(false)} />
+          <div className="pr-drawer">
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
+              <p style={{ fontWeight:800, fontSize:16 }}>Filters</p>
+              <button onClick={() => setDrawerOpen(false)} style={{ background:'none', border:'none', fontSize:22, cursor:'pointer', color:'#aaa', fontFamily:'inherit' }}>×</button>
+            </div>
+            <FilterPanel filters={filters} categories={categories} brands={brands} set={set} clear={clear} total={total} />
+            <button onClick={() => setDrawerOpen(false)}
+              style={{ width:'100%', marginTop:16, padding:'13px', background:'#9c155f', color:'#fff', border:'none', borderRadius:10, fontWeight:700, fontSize:15, cursor:'pointer', fontFamily:'inherit' }}>
+              Show Results ({total})
+            </button>
+          </div>
+        </>
+      )}
     </div>
   )
 }
