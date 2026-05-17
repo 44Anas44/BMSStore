@@ -143,6 +143,7 @@ export default function Header() {
 
   const navItems = [
     { label: 'Home',         to: '/' },
+    { label: 'Products',     to: '/products' },
     { label: 'New Arrivals', to: '/products?sort=newest' },
     { label: 'Deals',        to: '/products?isPromo=true' },
     ...(HAS_SECONDHAND  ? [{ label: 'Second Hand',  to: '/secondhand'  }] : []),
