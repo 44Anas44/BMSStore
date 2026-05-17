@@ -33,14 +33,6 @@ function FilterPanel({ filters, categories, brands, set, clear, total, closeDraw
         <span style={{ color:'#ccc', lineHeight:'38px', flexShrink:0 }}>—</span>
         <input type="number" min="0" placeholder="Max" value={filters.maxPrice} onChange={e => set('maxPrice', e.target.value)} style={{ ...inp, flex:1, width:0 }}/>
       </div>
-      <label style={lbl}>Sort By</label>
-      <select value={filters.sort} onChange={e => set('sort', e.target.value)} style={{ ...inp, cursor:'pointer' }}>
-        <option value="default">Default</option>
-        <option value="newest">Newest</option>
-        <option value="popular">Most Popular</option>
-        <option value="price-asc">Price: Low → High</option>
-        <option value="price-desc">Price: High → Low</option>
-      </select>
     </div>
   )
 }
