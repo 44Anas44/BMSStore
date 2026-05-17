@@ -79,19 +79,18 @@ function CategorySection({ categories, loading }) {
           ))}
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(160px,1fr))', gap: 14 }}>
+        <div style={{ display: 'flex', gap: 12, overflowX: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', paddingBottom: 4 }}>
           {roots.map((cat, i) => (
             <Link key={cat._id} to={`/products?category=${cat._id}`}
-              style={{ textDecoration: 'none', borderRadius: 14, overflow: 'hidden', position: 'relative', minHeight: 140, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', transition: 'transform 0.2s, box-shadow 0.2s' }}
+              style={{ textDecoration: 'none', borderRadius: 14, overflow: 'hidden', position: 'relative', minWidth: 140, height: 130, flexShrink: 0, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', transition: 'transform 0.2s, box-shadow 0.2s' }}
               onMouseEnter={e => { e.currentTarget.style.transform='translateY(-4px)'; e.currentTarget.style.boxShadow='0 12px 32px rgba(0,0,0,0.18)' }}
               onMouseLeave={e => { e.currentTarget.style.transform=''; e.currentTarget.style.boxShadow='' }}>
               {cat.image
                 ? <img src={cat.image} alt={cat.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
                 : <div style={{ position: 'absolute', inset: 0, background: FALLBACK_COLORS[i % FALLBACK_COLORS.length] }} />
               }
-              <div style={{ position: 'relative', background: 'linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.1) 60%, transparent 100%)', padding: '32px 14px 14px' }}>
-                <p style={{ color: '#fff', fontWeight: 700, fontSize: 14, marginBottom: 2, textShadow: '0 1px 4px rgba(0,0,0,0.4)' }}>{cat.name}</p>
-                {cat.description && <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11 }}>{cat.description}</p>}
+              <div style={{ position: 'relative', background: 'linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.1) 60%, transparent 100%)', padding: '28px 12px 10px' }}>
+                <p style={{ color: '#fff', fontWeight: 700, fontSize: 13, textShadow: '0 1px 4px rgba(0,0,0,0.4)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{cat.name}</p>
               </div>
             </Link>
           ))}
@@ -183,30 +182,25 @@ function ProductSlider({ products, loading }) {
 function PromoBanner({ products }) {
   if (!products.length) return null
   return (
-    <section style={{ maxWidth: 1200, margin: '72px auto 0', padding: '0 24px' }}>
-      <div style={{ background: '#9c155f', borderRadius: 20, padding: '40px 48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 32, flexWrap: 'wrap' }}>
-        <div style={{ color: '#fff' }}>
-          <p style={{ fontSize: 11, fontWeight: 700, opacity: 0.55, letterSpacing: 1.2, textTransform: 'uppercase', marginBottom: 8 }}>Limited Time</p>
-          <h2 style={{ fontSize: 32, fontWeight: 900, letterSpacing: -0.5, marginBottom: 10, lineHeight: 1.15 }}>
-            🔥 Hot Deals<br />Don't Miss Out
-          </h2>
-          <p style={{ opacity: 0.65, fontSize: 14, marginBottom: 24, maxWidth: 340 }}>Grab our best promotions before they sell out. Updated every week.</p>
+    <section style={{ maxWidth: 1200, margin: '48px auto 0', padding: '0 24px' }}>
+      <div style={{ background: '#9c155f', borderRadius: 16, padding: '24px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20 }}>
+        <div style={{ color: '#fff', minWidth: 0 }}>
+          <p style={{ fontSize: 10, fontWeight: 700, opacity: 0.55, letterSpacing: 1.2, textTransform: 'uppercase', marginBottom: 4 }}>Limited Time</p>
+          <h2 style={{ fontSize: 20, fontWeight: 900, letterSpacing: -0.3, marginBottom: 6, lineHeight: 1.2 }}>🔥 Hot Deals</h2>
           <Link to="/products?isPromo=true"
-            style={{ display: 'inline-block', textDecoration: 'none', background: '#f97316', color: '#fff', padding: '12px 28px', borderRadius: 10, fontWeight: 700, fontSize: 14 }}>
+            style={{ display: 'inline-block', textDecoration: 'none', background: '#f97316', color: '#fff', padding: '8px 20px', borderRadius: 8, fontWeight: 700, fontSize: 13 }}>
             Shop Deals →
           </Link>
         </div>
-        <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 10, flexShrink: 0, overflowX: 'auto' }}>
           {products.slice(0,3).map(p => (
             <Link key={p._id} to={`/products/${p._id}`}
-              style={{ textDecoration: 'none', background: 'rgba(255,255,255,0.08)', borderRadius: 12, overflow: 'hidden', width: 130, flexShrink: 0, border: '1px solid rgba(255,255,255,0.12)', transition: 'background 0.15s' }}
-              onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.15)'}
-              onMouseLeave={e => e.currentTarget.style.background='rgba(255,255,255,0.08)'}>
-              <img src={p.images?.[0] || 'https://placehold.co/130x120/555/fff?text=+'} alt={p.name}
-                style={{ width: '100%', height: 110, objectFit: 'cover' }} />
-              <div style={{ padding: '8px 10px' }}>
-                <p style={{ color: '#fff', fontSize: 11, fontWeight: 600, marginBottom: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.name}</p>
-                <p style={{ color: '#f97316', fontSize: 13, fontWeight: 800 }}>{p.price.toFixed(2)} TND</p>
+              style={{ textDecoration: 'none', background: 'rgba(255,255,255,0.08)', borderRadius: 10, overflow: 'hidden', width: 100, flexShrink: 0, border: '1px solid rgba(255,255,255,0.12)' }}>
+              <img src={p.images?.[0] || 'https://placehold.co/100x80/555/fff?text=+'} alt={p.name}
+                style={{ width: '100%', height: 80, objectFit: 'cover' }} />
+              <div style={{ padding: '6px 8px' }}>
+                <p style={{ color: '#fff', fontSize: 10, fontWeight: 600, marginBottom: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.name}</p>
+                <p style={{ color: '#f97316', fontSize: 12, fontWeight: 800 }}>{p.price.toFixed(2)} TND</p>
               </div>
             </Link>
           ))}
@@ -326,7 +320,7 @@ export default function HomePage() {
           linkTo="/products?sort=newest"
           linkLabel="See all new"
         />
-        <ProductSlider products={latest} loading={loadingLatest} />
+        <ProductGrid products={latest.slice(0,8)} loading={loadingLatest} />
       </section>
 
       {/* 2. Categories with images managed from admin */}
@@ -344,7 +338,7 @@ export default function HomePage() {
           linkTo="/products?sort=popular"
           linkLabel="See all"
         />
-        <ProductSlider products={popular} loading={loadingPopular} />
+        <ProductGrid products={popular.slice(0,8)} loading={loadingPopular} />
       </section>
 
       <Newsletter />
