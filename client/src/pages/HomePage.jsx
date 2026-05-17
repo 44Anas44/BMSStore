@@ -317,7 +317,7 @@ export default function HomePage() {
           linkTo="/products?sort=newest"
           linkLabel="See all new"
         />
-        <ProductGrid products={latest.slice(0,8)} loading={loadingLatest} />
+        <ProductSlider products={latest} loading={loadingLatest} />
       </section>
 
       {/* 2. Categories with images managed from admin */}
@@ -335,7 +335,7 @@ export default function HomePage() {
           linkTo="/products?sort=popular"
           linkLabel="See all"
         />
-        <ProductGrid products={popular.slice(0,8)} loading={loadingPopular} />
+        <ProductSlider products={popular} loading={loadingPopular} />
       </section>
 
       <Newsletter />
