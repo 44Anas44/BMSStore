@@ -349,7 +349,7 @@ export default function Header() {
             <div ref={catMenuRef}>
               <button
                 className={`hdr-products-btn${showCatMenu ? ' is-open' : ''}`}
-                onClick={() => setShowCatMenu(o => !o)}
+                onClick={() => { navigate('/products'); setShowCatMenu(false) }}
                 onMouseEnter={() => setShowCatMenu(true)}
               >
                 <GridIcon /> Products <ChevronDown />
