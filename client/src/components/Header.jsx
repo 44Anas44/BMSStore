@@ -143,7 +143,15 @@ export default function Header() {
 
   const navItems = [
     { label: 'Home',         to: '/' },
-    { label: 'Products',     to: '/products' },
+    { label: 'New Arrivals', to: '/products?sort=newest' },
+    { label: 'Deals',        to: '/products?isPromo=true' },
+    ...(HAS_SECONDHAND  ? [{ label: 'Second Hand',  to: '/secondhand'  }] : []),
+    ...(HAS_DIAGNOSTICS ? [{ label: 'Track Repair', to: '/diagnostics' }] : []),
+  ]
+  // Mobile drawer gets Products link separately since desktop has the dropdown
+  const mobileNavItems = [
+    { label: 'Home',         to: '/' },
+    { label: 'All Products', to: '/products' },
     { label: 'New Arrivals', to: '/products?sort=newest' },
     { label: 'Deals',        to: '/products?isPromo=true' },
     ...(HAS_SECONDHAND  ? [{ label: 'Second Hand',  to: '/secondhand'  }] : []),
@@ -424,13 +432,7 @@ export default function Header() {
               <button className="hdr-drawer-close" onClick={() => setMenuOpen(false)}><CloseIcon /></button>
             </div>
 
-            <form className="hdr-drawer-search" onSubmit={e => { handleSearch(e); setMenuOpen(false) }}>
-              <input type="text" className="hdr-drawer-search-input" placeholder="Search products…"
-                value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
-              <button type="submit" className="hdr-drawer-search-btn" aria-label="Search"><SearchIcon /></button>
-            </form>
-
-            {navItems.map(({ label, to }) => {
+            {mobileNavItems.map(({ label, to }) => {
               const path     = to.split('?')[0]
               const isActive = loc.pathname === path && !to.includes('?')
               return (
