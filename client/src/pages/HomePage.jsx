@@ -182,26 +182,23 @@ function ProductSlider({ products, loading }) {
 function PromoBanner({ products }) {
   if (!products.length) return null
   return (
-    <section style={{ maxWidth: 1200, margin: '48px auto 0', padding: '0 24px' }}>
-      <div style={{ background: '#9c155f', borderRadius: 16, padding: '24px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20 }}>
-        <div style={{ color: '#fff', minWidth: 0 }}>
-          <p style={{ fontSize: 10, fontWeight: 700, opacity: 0.55, letterSpacing: 1.2, textTransform: 'uppercase', marginBottom: 4 }}>Limited Time</p>
-          <h2 style={{ fontSize: 20, fontWeight: 900, letterSpacing: -0.3, marginBottom: 6, lineHeight: 1.2 }}>🔥 Hot Deals</h2>
+    <section style={{ maxWidth: 1200, margin: '40px auto 0', padding: '0 24px' }}>
+      <div style={{ background: 'linear-gradient(135deg,#9c155f 0%,#b91c6e 100%)', borderRadius: 14, padding: '18px 20px', display: 'flex', alignItems: 'center', gap: 16, overflow: 'hidden' }}>
+        <div style={{ color: '#fff', flexShrink: 0 }}>
+          <p style={{ fontSize: 10, fontWeight: 700, opacity: 0.6, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 2 }}>Limited Time</p>
+          <p style={{ fontSize: 18, fontWeight: 900, lineHeight: 1.1, marginBottom: 10 }}>🔥 Hot Deals</p>
           <Link to="/products?isPromo=true"
-            style={{ display: 'inline-block', textDecoration: 'none', background: '#f97316', color: '#fff', padding: '8px 20px', borderRadius: 8, fontWeight: 700, fontSize: 13 }}>
+            style={{ display: 'inline-block', textDecoration: 'none', background: '#f97316', color: '#fff', padding: '7px 16px', borderRadius: 8, fontWeight: 700, fontSize: 12, whiteSpace: 'nowrap' }}>
             Shop Deals →
           </Link>
         </div>
-        <div style={{ display: 'flex', gap: 10, flexShrink: 0, overflowX: 'auto' }}>
-          {products.slice(0,3).map(p => (
+        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', flex: 1 }}>
+          {products.slice(0, 6).map(p => (
             <Link key={p._id} to={`/products/${p._id}`}
-              style={{ textDecoration: 'none', background: 'rgba(255,255,255,0.08)', borderRadius: 10, overflow: 'hidden', width: 100, flexShrink: 0, border: '1px solid rgba(255,255,255,0.12)' }}>
-              <img src={p.images?.[0] || 'https://placehold.co/100x80/555/fff?text=+'} alt={p.name}
-                style={{ width: '100%', height: 80, objectFit: 'cover' }} />
-              <div style={{ padding: '6px 8px' }}>
-                <p style={{ color: '#fff', fontSize: 10, fontWeight: 600, marginBottom: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.name}</p>
-                <p style={{ color: '#f97316', fontSize: 12, fontWeight: 800 }}>{p.price.toFixed(2)} TND</p>
-              </div>
+              style={{ textDecoration: 'none', flexShrink: 0, width: 72, display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <img src={p.images?.[0] || 'https://placehold.co/72x72/555/fff?text=+'} alt={p.name}
+                style={{ width: 72, height: 72, objectFit: 'cover', borderRadius: 8, border: '1.5px solid rgba(255,255,255,0.2)' }} />
+              <p style={{ color: '#f97316', fontSize: 11, fontWeight: 800, textAlign: 'center' }}>{p.price.toFixed(0)} TND</p>
             </Link>
           ))}
         </div>
