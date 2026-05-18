@@ -35,37 +35,33 @@ router.post('/', async (req, res) => {
   }
   if (adjustedItems.length === 0) return res.status(400).json({ error: 'All items are out of stock', warnings })
   const order = await Order.create({ ...req.body, items: adjustedItems, warnings })
-  // Decrement stock and send alerts
-  const threshold = parseInt(process.env.LOW_STOCK_THRESHOLD || 5)
-  for (const item of order.items) {
-    if (item.product) {
-      const updated = await Product.findByIdAndUpdate(
-        item.product,
-        { $inc: { sold: item.qty, stock: -item.qty } },
-        { new: true }
-      )
-      if (updated) {
-        try {
-          if (updated.stock === 0) {
-            await sendOutOfStockEmail(updated)
-          } else if (updated.stock <= threshold) {
-            await sendLowStockEmail(updated, updated.stock)
-          }
-        } catch (e) { console.warn('Stock alert email failed:', e.message) }
-        // Push notification for stock alerts
-        try {
-          if (updated.stock === 0) {
-            await sendPushNotification({ title: '🚨 Out of Stock', body: updated.name + ' is now out of stock', data: { type: 'stock', productId: String(updated._id) } })
-          } else if (updated.stock <= threshold) {
-            await sendPushNotification({ title: '⚠️ Low Stock Alert', body: updated.name + ' — only ' + updated.stock + ' left', data: { type: 'stock', productId: String(updated._id) } })
-          }
-        } catch (e) { console.warn('Stock push failed:', e.message) }
-      }
-    }
-  }
-  try { await sendOrderEmail(order) } catch (e) { console.warn('Email failed:', e.message) }
-  try { await sendPushNotification({ title: '🛒 New Order', body: order.customer.name + ' placed an order · ' + order.total.toFixed(2) + ' TND', data: { type: 'order', orderId: String(order._id) } }) } catch (e) { console.warn('Order push failed:', e.message) }
+  // Respond immediately — nothing should block the customer
   res.status(201).json(order)
+
+  // Everything below runs in background after response is sent
+  const threshold = parseInt(process.env.LOW_STOCK_THRESHOLD || 5);
+  (async () => {
+    for (const item of order.items) {
+      if (!item.product) continue
+      try {
+        const updated = await Product.findByIdAndUpdate(
+          item.product,
+          { $inc: { sold: item.qty, stock: -item.qty } },
+          { new: true }
+        )
+        if (!updated) continue
+        if (updated.stock === 0) {
+          sendOutOfStockEmail(updated).catch(e => console.warn('Out of stock email failed:', e.message))
+          sendPushNotification({ title: '🚨 Out of Stock', body: updated.name + ' is now out of stock', data: { type: 'stock', productId: String(updated._id) } }).catch(e => console.warn('Stock push failed:', e.message))
+        } else if (updated.stock <= threshold) {
+          sendLowStockEmail(updated, updated.stock).catch(e => console.warn('Low stock email failed:', e.message))
+          sendPushNotification({ title: '⚠️ Low Stock Alert', body: updated.name + ' — only ' + updated.stock + ' left', data: { type: 'stock', productId: String(updated._id) } }).catch(e => console.warn('Stock push failed:', e.message))
+        }
+      } catch (e) { console.warn('Stock update failed:', e.message) }
+    }
+    sendOrderEmail(order).catch(e => console.warn('Order email failed:', e.message))
+    sendPushNotification({ title: '🛒 New Order', body: order.customer.name + ' placed an order · ' + order.total.toFixed(2) + ' TND', data: { type: 'order', orderId: String(order._id) } }).catch(e => console.warn('Order push failed:', e.message))
+  })()
 })
 
 router.patch('/:id/status', verifyToken, async (req, res) => {
