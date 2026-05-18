@@ -1,44 +1,22 @@
-const nodemailer = require('nodemailer')
-
-// ── Transporter ───────────────────────────────────────────────────────────────
-// Resend is recommended on Render (uses HTTPS, not SMTP which Render blocks)
-// Set EMAIL_SERVICE=resend and EMAIL_PASS=re_xxxx in your env vars
-function getTransporter() {
-  if (process.env.EMAIL_SERVICE === 'resend') {
-    return nodemailer.createTransport({
-      host: 'smtp.resend.com',
-      port: 465,
-      secure: true,
-      auth: { user: 'resend', pass: process.env.EMAIL_PASS },
-      connectionTimeout: 10000,
-      socketTimeout: 12000,
-    })
-  }
-  if (process.env.EMAIL_SERVICE === 'sendgrid') {
-    return nodemailer.createTransport({
-      host: 'smtp.sendgrid.net', port: 587,
-      auth: { user: 'apikey', pass: process.env.EMAIL_PASS },
-      connectionTimeout: 10000, socketTimeout: 12000,
-    })
-  }
-  // Gmail fallback (blocked on Render free tier — use Resend instead)
-  return nodemailer.createTransport({
-    service: 'gmail',
-    auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
-    connectionTimeout: 10000, socketTimeout: 12000,
-  })
-}
-
-const transporter = getTransporter()
-
-// ── Send helper ───────────────────────────────────────────────────────────────
+// ── Send via Resend HTTP API (works on Render free — no SMTP needed) ──────────
 async function send(to, subject, html) {
-  // Resend requires a verified domain — use onboarding@resend.dev for testing
-  // or your verified domain email once set up
-  const from = process.env.EMAIL_SERVICE === 'resend' && !process.env.EMAIL_FROM?.includes('@')
-    ? 'BMS STORE <onboarding@resend.dev>'
-    : (process.env.EMAIL_FROM || process.env.EMAIL_USER)
-  await transporter.sendMail({ from, to, subject, html })
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.EMAIL_PASS}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: 'BMS STORE <onboarding@resend.dev>',
+      to,
+      subject,
+      html,
+    }),
+  })
+  if (!res.ok) {
+    const err = await res.text()
+    throw new Error(`Resend API error: ${res.status} ${err}`)
+  }
 }
 
 // ── Order email ───────────────────────────────────────────────────────────────
