@@ -3,28 +3,39 @@ import { useSearchParams } from 'react-router-dom'
 import ProductCard from '../components/ProductCard'
 import { productsApi, categoriesApi, brandsApi } from '../lib/api'
 
-const SearchIcon = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#bbb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-  </svg>
-)
+const inp = { width:'100%', padding:'9px 12px', border:'1px solid #e5e5e5', borderRadius:8, fontSize:13, fontFamily:'inherit', outline:'none', background:'#fff', color:'#1a1a1a', boxSizing:'border-box' }
+const lbl = { display:'block', fontSize:11, fontWeight:600, color:'#aaa', textTransform:'uppercase', letterSpacing:0.6, marginBottom:6 }
 
-const FilterIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="4" y1="6" x2="20" y2="6"/>
-    <line x1="8" y1="12" x2="16" y2="12"/>
-    <line x1="11" y1="18" x2="13" y2="18"/>
-  </svg>
-)
-
-const CloseIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-  </svg>
-)
-
-const inp = { width: '100%', padding: '9px 12px', border: '1px solid #e5e5e5', borderRadius: 8, fontSize: 13, fontFamily: 'inherit', outline: 'none', background: '#fff', color: '#1a1a1a', boxSizing: 'border-box' }
-const lbl = { display: 'block', fontSize: 11, fontWeight: 600, color: '#aaa', textTransform: 'uppercase', letterSpacing: 0.6, marginBottom: 6 }
+function FilterPanel({ filters, categories, brands, set, clear, total, closeDrawer }) {
+  return (
+    <div style={{ border:'1px solid #eee', borderRadius:14, padding:'18px 16px', background:'#fff' }}>
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
+        <p style={{ fontWeight:700, fontSize:14, color:'#1a1a1a' }}>Filters</p>
+        <button onClick={clear} style={{ background:'none', border:'none', fontSize:12, color:'#f97316', fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>Clear all</button>
+      </div>
+      <div style={{ position:'relative', marginBottom:16 }}>
+        <input placeholder="Search products..." value={filters.search} onChange={e => set('search', e.target.value)} style={{ ...inp, paddingLeft:32 }}/>
+        <svg style={{ position:'absolute', left:10, top:'50%', transform:'translateY(-50%)' }} width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#bbb" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+      <label style={lbl}>Category</label>
+      <select value={filters.category} onChange={e => set('category', e.target.value)} style={{ ...inp, marginBottom:14, cursor:'pointer' }}>
+        <option value="">All categories</option>
+        {categories.map(c => <option key={c._id} value={c._id}>{c.parent?'  └ ':''}{c.name}</option>)}
+      </select>
+      <label style={lbl}>Brand</label>
+      <select value={filters.brand} onChange={e => set('brand', e.target.value)} style={{ ...inp, marginBottom:14, cursor:'pointer' }}>
+        <option value="">All brands</option>
+        {brands.map(b => <option key={b._id} value={b._id}>{b.name}</option>)}
+      </select>
+      <label style={lbl}>Price Range</label>
+      <div style={{ display:'flex', gap:6, marginBottom:14 }}>
+        <input type="number" min="0" placeholder="Min" value={filters.minPrice} onChange={e => set('minPrice', e.target.value)} style={{ ...inp, flex:1, width:0 }}/>
+        <span style={{ color:'#ccc', lineHeight:'38px', flexShrink:0 }}>—</span>
+        <input type="number" min="0" placeholder="Max" value={filters.maxPrice} onChange={e => set('maxPrice', e.target.value)} style={{ ...inp, flex:1, width:0 }}/>
+      </div>
+    </div>
+  )
+}
 
 export default function ProductsPage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -34,7 +45,6 @@ export default function ProductsPage() {
   const [brands,     setBrands]     = useState([])
   const [loading,    setLoading]    = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
-
   const [filters, setFilters] = useState({
     category: searchParams.get('category') || '',
     brand:    searchParams.get('brand')    || '',
@@ -42,7 +52,6 @@ export default function ProductsPage() {
     maxPrice: searchParams.get('maxPrice') || '',
     sort:     searchParams.get('sort')     || 'default',
     search:   searchParams.get('search')   || '',
-    page: 1,
   })
 
   useEffect(() => {
@@ -51,20 +60,16 @@ export default function ProductsPage() {
   }, [])
 
   const set = (k, v) => {
-    const next = { ...filters, [k]: v, page: 1 }
+    const next = { ...filters, [k]: v }
     setFilters(next)
     const p = {}
-    Object.entries(next).forEach(([key, val]) => {
-      if (val && val !== 'default' && key !== 'page') p[key] = val
-    })
+    Object.entries(next).forEach(([key, val]) => { if (val && val !== 'default') p[key] = val })
     setSearchParams(p, { replace: true })
   }
 
   const load = useCallback(() => {
     setLoading(true)
-    const params = Object.fromEntries(
-      Object.entries(filters).filter(([,v]) => v !== '' && v !== 'default')
-    )
+    const params = Object.fromEntries(Object.entries(filters).filter(([,v]) => v && v !== 'default'))
     productsApi.getAll(params)
       .then(d => { setProducts(d.products); setTotal(d.total) })
       .catch(console.error)
@@ -73,180 +78,99 @@ export default function ProductsPage() {
 
   useEffect(() => { load() }, [load])
 
-  const clear = () => {
-    const empty = { category: '', brand: '', minPrice: '', maxPrice: '', sort: 'default', search: '', page: 1 }
-    setFilters(empty)
-    setSearchParams({}, { replace: true })
-  }
+  const clear = () => { setFilters({ category:'', brand:'', minPrice:'', maxPrice:'', sort:'default', search:'' }); setSearchParams({}, { replace:true }) }
 
-  const activeCat = categories.find(c => c._id === filters.category)
-
-  // Count active filters for the badge
-  const activeFilterCount = [
-    filters.category, filters.brand, filters.minPrice, filters.maxPrice,
-    filters.search, filters.sort !== 'default' ? filters.sort : ''
-  ].filter(Boolean).length
-
-  const FilterPanel = () => (
-    <div style={{ border: '1px solid #eee', borderRadius: 14, padding: '18px 16px', background: '#fff' }}>
-      <p style={{ fontWeight: 700, marginBottom: 16, fontSize: 14, color: '#1a1a1a' }}>Filters</p>
-
-      <div style={{ position: 'relative', marginBottom: 16 }}>
-        <div style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)' }}><SearchIcon/></div>
-        <input placeholder="Search products..." value={filters.search}
-          onChange={e => set('search', e.target.value)}
-          style={{ ...inp, paddingLeft: 32 }}/>
-      </div>
-
-      <label style={lbl}>Category</label>
-      <select value={filters.category} onChange={e => set('category', e.target.value)} style={{ ...inp, marginBottom: 14, cursor: 'pointer' }}>
-        <option value="">All categories</option>
-        {categories.map(c => <option key={c._id} value={c._id}>{c.parent ? '  └ ' : ''}{c.name}</option>)}
-      </select>
-
-      <label style={lbl}>Brand</label>
-      <select value={filters.brand} onChange={e => set('brand', e.target.value)} style={{ ...inp, marginBottom: 14, cursor: 'pointer' }}>
-        <option value="">All brands</option>
-        {brands.map(b => <option key={b._id} value={b._id}>{b.name}</option>)}
-      </select>
-
-      <label style={lbl}>Price Range</label>
-      <div style={{ display: 'flex', gap: 6, marginBottom: 14 }}>
-        <input type="number" min="0" placeholder="Min" value={filters.minPrice}
-          onChange={e => set('minPrice', e.target.value)}
-          style={{ ...inp, width: 0, flex: 1, minWidth: 0 }}/>
-        <span style={{ color: '#ccc', lineHeight: '38px', flexShrink: 0, fontSize: 13 }}>—</span>
-        <input type="number" min="0" placeholder="Max" value={filters.maxPrice}
-          onChange={e => set('maxPrice', e.target.value)}
-          style={{ ...inp, width: 0, flex: 1, minWidth: 0 }}/>
-      </div>
-
-      <label style={lbl}>Sort By</label>
-      <select value={filters.sort} onChange={e => set('sort', e.target.value)} style={{ ...inp, marginBottom: 14, cursor: 'pointer' }}>
-        <option value="default">Default</option>
-        <option value="newest">Newest</option>
-        <option value="popular">Most Popular</option>
-        <option value="price-asc">Price: Low → High</option>
-        <option value="price-desc">Price: High → Low</option>
-      </select>
-
-      <button onClick={clear}
-        style={{ width: '100%', padding: '9px 12px', border: '1px solid #e5e5e5', borderRadius: 8, cursor: 'pointer', fontSize: 13, background: '#fafafa', color: '#666', fontFamily: 'inherit', fontWeight: 500, transition: 'background 0.15s' }}
-        onMouseEnter={e => e.currentTarget.style.background='#f0f0f0'}
-        onMouseLeave={e => e.currentTarget.style.background='#fafafa'}>
-        Clear All Filters
-      </button>
-    </div>
-  )
+  const activeFilters = Object.entries(filters).filter(([k,v]) => v && v !== 'default' && k !== 'sort').length
 
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '32px 24px' }}>
-      <div style={{ marginBottom: 24, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
-        <div>
-          <h1 style={{ fontSize: 26, fontWeight: 800, color: '#1a1a1a', letterSpacing: -0.3 }}>
-            {activeCat ? activeCat.name : 'All Products'}
-            <span style={{ fontSize: 15, fontWeight: 400, color: '#aaa', marginLeft: 10 }}>({total})</span>
-          </h1>
-          {activeCat && (
-            <button onClick={clear} style={{ marginTop: 6, fontSize: 12, color: '#888', background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: 5, fontFamily: 'inherit' }}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-              Clear category filter
-            </button>
-          )}
-        </div>
+    <div style={{ maxWidth:1200, margin:'0 auto', padding:'24px 16px' }}>
+      <style>{`
+        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+        .pr-drawer-overlay { display:none }
+        .pr-sidebar { display:block }
+        @media(max-width:768px) {
+          .pr-layout { grid-template-columns: 1fr !important }
+          .pr-sidebar { display:none }
+          .pr-drawer-overlay { display:block; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:300 }
+          .pr-drawer { position:fixed; bottom:0; left:0; right:0; background:#fff; border-radius:20px 20px 0 0; padding:20px 16px 32px; z-index:301; max-height:88vh; overflow-y:auto; box-shadow:0 -8px 32px rgba(0,0,0,.15) }
+          .pr-filter-fab { display:flex !important }
+        }
+        .pr-sort-select { display:block }
+        @media(max-width:768px) { .pr-sort-select { display:none } }
+        .pr-filter-fab { display:none; position:fixed; bottom:24px; right:20px; z-index:200; align-items:center; gap:8px; background:#9c155f; color:#fff; border:none; border-radius:50px; padding:12px 20px; font-size:14px; font-weight:700; font-family:inherit; cursor:pointer; box-shadow:0 4px 20px rgba(156,21,95,0.4) }
+      `}</style>
 
-        {/* Mobile filter button — hidden on desktop */}
-        <button
-          className="mobile-filter-btn"
-          onClick={() => setDrawerOpen(true)}
-          style={{
-            display: 'none', alignItems: 'center', gap: 8,
-            padding: '9px 16px', borderRadius: 10,
-            border: '1px solid #e5e5e5', background: '#fff',
-            cursor: 'pointer', fontSize: 13, fontWeight: 600,
-            color: '#1a1a1a', fontFamily: 'inherit',
-            position: 'relative', flexShrink: 0,
-            boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
-          }}>
-          <FilterIcon />
-          Filters
-          {activeFilterCount > 0 && (
-            <span style={{
-              position: 'absolute', top: -7, right: -7,
-              background: 'var(--primary)', color: 'var(--secondary)',
-              borderRadius: '50%', width: 20, height: 20,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 11, fontWeight: 800, lineHeight: 1,
-              border: '2px solid #fff',
-            }}>
-              {activeFilterCount}
-            </span>
-          )}
-        </button>
+      <div style={{ marginBottom:20, display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:12, flexWrap:'wrap' }}>
+        <div>
+          <div style={{ display:'inline-block', background:'var(--primary)', color:'#fff', fontSize:11, fontWeight:700, padding:'3px 12px', borderRadius:20, letterSpacing:0.8, textTransform:'uppercase', marginBottom:8 }}>Store</div>
+          <h1 style={{ fontSize:22, fontWeight:800, color:'#1a1a1a', letterSpacing:-0.3 }}>
+            All Products
+            <span style={{ fontSize:14, fontWeight:400, color:'#aaa', marginLeft:8 }}>({total})</span>
+          </h1>
+        </div>
+        <select className="pr-sort-select" value={filters.sort} onChange={e => set('sort', e.target.value)}
+          style={{ ...inp, width:'auto', minWidth:160, cursor:'pointer', flexShrink:0 }}>
+          <option value="default">Sort: Default</option>
+          <option value="newest">Newest</option>
+          <option value="popular">Most Popular</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
+        </select>
       </div>
 
-      {/* Mobile filter drawer overlay */}
+      <div className="pr-layout" style={{ display:'grid', gridTemplateColumns:'220px 1fr', gap:24, alignItems:'start' }}>
+        <aside className="pr-sidebar" style={{ position:'sticky', top:80 }}>
+          <FilterPanel filters={filters} categories={categories} brands={brands} set={set} clear={clear} total={total} />
+        </aside>
+
+        <div>
+          {loading ? (
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(170px,1fr))', gap:16 }}>
+              {[...Array(8)].map((_,i) => <div key={i} style={{ height:300, borderRadius:12, background:'linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%)', backgroundSize:'200% 100%', animation:'shimmer 1.4s infinite' }}/>)}
+            </div>
+          ) : products.length === 0 ? (
+            <div style={{ textAlign:'center', padding:'80px 0', color:'#bbb' }}>
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ddd" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ display:'block', margin:'0 auto 16px' }}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <p style={{ fontSize:16, color:'#aaa' }}>No products found</p>
+              <button onClick={clear} style={{ marginTop:12, background:'none', border:'1px solid #ddd', borderRadius:8, padding:'8px 20px', cursor:'pointer', fontSize:13, fontFamily:'inherit', color:'#888' }}>Clear Filters</button>
+            </div>
+          ) : (
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(170px,1fr))', gap:16 }}>
+              {products.map(p => <ProductCard key={p._id} product={p}/>)}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <button className="pr-filter-fab" onClick={() => setDrawerOpen(true)}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="12" y1="18" x2="20" y2="18"/></svg>
+        Filters {activeFilters > 0 && <span style={{ background:'#f97316', borderRadius:50, padding:'1px 7px', fontSize:11 }}>{activeFilters}</span>}
+      </button>
+
       {drawerOpen && (
         <>
-          <div onClick={() => setDrawerOpen(false)} style={{
-            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)',
-            zIndex: 300, backdropFilter: 'blur(2px)',
-          }} />
-          <div style={{
-            position: 'fixed', bottom: 0, left: 0, right: 0,
-            background: '#fff', zIndex: 301,
-            borderRadius: '20px 20px 0 0',
-            padding: '20px 20px 32px',
-            boxShadow: '0 -8px 32px rgba(0,0,0,0.18)',
-            maxHeight: '85vh', overflowY: 'auto',
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <span style={{ fontWeight: 700, fontSize: 16, color: '#1a1a1a' }}>Filters</span>
-              <button onClick={() => setDrawerOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, color: '#666' }}>
-                <CloseIcon />
-              </button>
+          <div className="pr-drawer-overlay" onClick={() => setDrawerOpen(false)} />
+          <div className="pr-drawer">
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
+              <p style={{ fontWeight:800, fontSize:16 }}>Filters</p>
+              <label style={{ display:'block', fontSize:11, fontWeight:600, color:'#aaa', textTransform:'uppercase', letterSpacing:0.6, marginBottom:6, marginTop:16 }}>Sort By</label>
+            <select value={filters.sort} onChange={e => set('sort', e.target.value)} style={{ width:'100%', padding:'9px 12px', border:'1px solid #e5e5e5', borderRadius:8, fontSize:13, fontFamily:'inherit', outline:'none', background:'#fff', color:'#1a1a1a', boxSizing:'border-box', cursor:'pointer', marginBottom:8 }}>
+              <option value="default">Default</option>
+              <option value="newest">Newest</option>
+              <option value="popular">Most Popular</option>
+              <option value="price-asc">Price: Low → High</option>
+              <option value="price-desc">Price: High → Low</option>
+            </select>
+            <button onClick={() => setDrawerOpen(false)} style={{ background:'none', border:'none', fontSize:22, cursor:'pointer', color:'#aaa', fontFamily:'inherit' }}>×</button>
             </div>
-            <FilterPanel />
-            <button
-              onClick={() => setDrawerOpen(false)}
-              style={{
-                width: '100%', marginTop: 16, padding: '13px',
-                borderRadius: 10, border: 'none', cursor: 'pointer',
-                background: 'var(--primary)', color: 'var(--secondary)',
-                fontSize: 14, fontWeight: 700, fontFamily: 'inherit',
-              }}>
+            <FilterPanel filters={filters} categories={categories} brands={brands} set={set} clear={clear} total={total} />
+            <button onClick={() => setDrawerOpen(false)}
+              style={{ width:'100%', marginTop:16, padding:'13px', background:'#9c155f', color:'#fff', border:'none', borderRadius:10, fontWeight:700, fontSize:15, cursor:'pointer', fontFamily:'inherit' }}>
               Show Results ({total})
             </button>
           </div>
         </>
       )}
-
-      <div className="products-layout" style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
-        {/* Desktop filter sidebar */}
-        <aside style={{ width: '220px', flexShrink: 0, position: 'sticky', top: 80 }}>
-          <FilterPanel />
-        </aside>
-
-        <div style={{ flex: 1, minWidth: 0 }}>
-          {loading ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(210px,1fr))', gap: 20 }}>
-              {[...Array(8)].map((_,i) => <div key={i} style={{ height: 340, borderRadius: 14, background: 'linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.4s infinite' }} />)}
-            </div>
-          ) : products.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '80px 0', color: '#bbb' }}>
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ddd" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block', margin: '0 auto 16px' }}>
-                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-              </svg>
-              <p style={{ fontSize: 16, marginBottom: 8, color: '#aaa' }}>No products found</p>
-              <p style={{ fontSize: 13 }}>Try adjusting or clearing your filters</p>
-            </div>
-          ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(210px,1fr))', gap: 20, alignItems: 'stretch' }}>
-              {products.map(p => <ProductCard key={p._id} product={p} />)}
-            </div>
-          )}
-        </div>
-      </div>
     </div>
   )
 }
