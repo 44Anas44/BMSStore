@@ -95,6 +95,8 @@ export default function ProductsPage() {
           .pr-drawer { position:fixed; bottom:0; left:0; right:0; background:#fff; border-radius:20px 20px 0 0; padding:20px 16px 32px; z-index:301; max-height:88vh; overflow-y:auto; box-shadow:0 -8px 32px rgba(0,0,0,.15) }
           .pr-filter-fab { display:flex !important }
         }
+        .pr-sort-select { display:block }
+        @media(max-width:768px) { .pr-sort-select { display:none } }
         .pr-filter-fab { display:none; position:fixed; bottom:24px; right:20px; z-index:200; align-items:center; gap:8px; background:#9c155f; color:#fff; border:none; border-radius:50px; padding:12px 20px; font-size:14px; font-weight:700; font-family:inherit; cursor:pointer; box-shadow:0 4px 20px rgba(156,21,95,0.4) }
       `}</style>
 
@@ -106,7 +108,7 @@ export default function ProductsPage() {
             <span style={{ fontSize:14, fontWeight:400, color:'#aaa', marginLeft:8 }}>({total})</span>
           </h1>
         </div>
-        <select value={filters.sort} onChange={e => set('sort', e.target.value)}
+        <select className="pr-sort-select" value={filters.sort} onChange={e => set('sort', e.target.value)}
           style={{ ...inp, width:'auto', minWidth:160, cursor:'pointer', flexShrink:0 }}>
           <option value="default">Sort: Default</option>
           <option value="newest">Newest</option>
@@ -151,7 +153,15 @@ export default function ProductsPage() {
           <div className="pr-drawer">
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
               <p style={{ fontWeight:800, fontSize:16 }}>Filters</p>
-              <button onClick={() => setDrawerOpen(false)} style={{ background:'none', border:'none', fontSize:22, cursor:'pointer', color:'#aaa', fontFamily:'inherit' }}>×</button>
+              <label style={{ display:'block', fontSize:11, fontWeight:600, color:'#aaa', textTransform:'uppercase', letterSpacing:0.6, marginBottom:6, marginTop:16 }}>Sort By</label>
+            <select value={filters.sort} onChange={e => set('sort', e.target.value)} style={{ width:'100%', padding:'9px 12px', border:'1px solid #e5e5e5', borderRadius:8, fontSize:13, fontFamily:'inherit', outline:'none', background:'#fff', color:'#1a1a1a', boxSizing:'border-box', cursor:'pointer', marginBottom:8 }}>
+              <option value="default">Default</option>
+              <option value="newest">Newest</option>
+              <option value="popular">Most Popular</option>
+              <option value="price-asc">Price: Low → High</option>
+              <option value="price-desc">Price: High → Low</option>
+            </select>
+            <button onClick={() => setDrawerOpen(false)} style={{ background:'none', border:'none', fontSize:22, cursor:'pointer', color:'#aaa', fontFamily:'inherit' }}>×</button>
             </div>
             <FilterPanel filters={filters} categories={categories} brands={brands} set={set} clear={clear} total={total} />
             <button onClick={() => setDrawerOpen(false)}
