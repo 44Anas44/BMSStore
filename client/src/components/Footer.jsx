@@ -6,7 +6,7 @@ const LOGO    = import.meta.env.VITE_LOGO_URL        || 'https://res.cloudinary.
 const ADDRESS = import.meta.env.VITE_CONTACT_ADDRESS || ''
 const PHONE   = import.meta.env.VITE_CONTACT_PHONE   || '+21629226349'
 const EMAIL   = import.meta.env.VITE_CONTACT_EMAIL   || 'anas4hamadi@gmail.com'
-const HOURS   = import.meta.env.VITE_CONTACT_HOURS   || 'Mon–Sat 9am–6pm'
+const HOURS   = import.meta.env.VITE_CONTACT_HOURS   || 'Lun–Sam 9h–18h'
 const IG      = import.meta.env.VITE_INSTAGRAM       || '#'
 const FB      = import.meta.env.VITE_FACEBOOK        || '#'
 
@@ -114,10 +114,10 @@ const ColTitle = ({ children }) => (
 
 /* ── Trust bar items ─────────────────────────────────── */
 const trustItems = [
-  { icon: <TruckIcon />,      label: 'Fast Delivery',   sub: 'Tracked shipping' },
-  { icon: <ShieldIcon />,     label: 'Secure Payments', sub: '100% safe checkout' },
-  { icon: <RefreshIcon />,    label: 'Easy Returns',    sub: '30-day policy' },
-  { icon: <HeadphonesIcon />, label: '24/7 Support',    sub: 'Always here to help' },
+  { icon: <TruckIcon />,      label: 'Livraison Rapide',   sub: 'Envoi suivi' },
+  { icon: <ShieldIcon />,     label: 'Paiements Sécurisés', sub: 'Paiement 100% sécurisé' },
+  { icon: <RefreshIcon />,    label: 'Retours Faciles',    sub: 'Politique 30 jours' },
+  { icon: <HeadphonesIcon />, label: 'Support 24/7',    sub: 'Toujours disponible' },
 ]
 
 /* ── Main Footer ─────────────────────────────────────── */
@@ -153,7 +153,7 @@ export default function Footer() {
           )}
           <p style={{fontWeight:900,fontSize:19,marginBottom:6,letterSpacing:-.3}}>{BRAND}</p>
           <p style={{color:'rgba(255,255,255,0.42)',fontSize:13,lineHeight:1.65,marginBottom:22}}>
-            Your trusted electronics &amp; tech store in Tunisia. Quality products at the best prices.
+            Votre boutique électronique de confiance en Tunisie. Des produits de qualité aux meilleurs prix.
           </p>
           <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
             {IG && IG !== '#' && <SocialBtn href={IG} title="Instagram"><InstagramIcon /></SocialBtn>}
@@ -165,11 +165,11 @@ export default function Footer() {
         {/* Navigation column */}
         <div>
           <ColTitle>Navigation</ColTitle>
-          <FooterLink to="/">Home</FooterLink>
-          <FooterLink to="/products">All Products</FooterLink>
-          <FooterLink to="/products?sort=newest">New Arrivals</FooterLink>
-          <FooterLink to="/products?isPromo=true">Deals &amp; Promos</FooterLink>
-          <FooterLink to="/cart">My Cart</FooterLink>
+          <FooterLink to="/">Accueil</FooterLink>
+          <FooterLink to="/products">Tous les Produits</FooterLink>
+          <FooterLink to="/products?sort=newest">Nouveautés</FooterLink>
+          <FooterLink to="/products?isPromo=true">Offres &amp; Promos</FooterLink>
+          <FooterLink to="/cart">Mon Panier</FooterLink>
         </div>
 
         {/* Contact column */}
@@ -202,17 +202,17 @@ export default function Footer() {
       <div style={{borderTop:'1px solid rgba(255,255,255,0.08)'}}>
         <div style={{maxWidth:1280,margin:'0 auto',padding:'16px 24px',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:10}}>
           <p style={{fontSize:12,color:'rgba(255,255,255,0.32)'}}>
-            © {new Date().getFullYear()} {BRAND}. All rights reserved.
+            © {new Date().getFullYear()} {BRAND}. Tous droits réservés.
           </p>
           <div style={{display:'flex',gap:20,flexWrap:'wrap'}}>
-            {['Privacy Policy','Terms of Service','Cookie Policy'].map(t => (
+            {['Politique de Confidentialité','Conditions d\'Utilisation','Politique des Cookies'].map(t => (
               <a key={t} href="#" style={{fontSize:12,color:'rgba(255,255,255,0.28)',textDecoration:'none',transition:'color .15s'}}
                 onMouseEnter={e => e.currentTarget.style.color='rgba(255,255,255,0.65)'}
                 onMouseLeave={e => e.currentTarget.style.color='rgba(255,255,255,0.28)'}
               >{t}</a>
             ))}
           </div>
-          <p style={{fontSize:12,color:'rgba(255,255,255,0.22)'}}>Powered by {BRAND}</p>
+          <p style={{fontSize:12,color:'rgba(255,255,255,0.22)'}}>Propulsé par {BRAND}</p>
         </div>
       </div>
 
