@@ -108,10 +108,10 @@ export default function ProductCard({ product }) {
 
         <button
           onClick={() => {
-            if (product.stock === 0) { toast.error(product.name + ' is out of stock'); return }
+            if (product.stock === 0) { toast.error(product.name + ' est en rupture de stock'); return }
             const result = addItem(product)
-            if (result?.clamped) toast.success('Added (only ' + result.available + ' in stock)')
-            else toast.success(product.name + ' added to cart!')
+            if (result?.clamped) toast.success('Ajouté (seulement ' + result.available + ' en stock)')
+            else toast.success(product.name + ' ajouté au panier !')
           }}
           style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
@@ -120,7 +120,7 @@ export default function ProductCard({ product }) {
             color: hovered ? '#f97316' : '#444',
             fontWeight: 600, fontSize: 13, transition: 'all 0.2s', fontFamily: 'inherit',
           }}>
-          <CartPlusIcon /> Add to Cart
+          <CartPlusIcon /> Ajouter au Panier
         </button>
       </div>
     </div>
