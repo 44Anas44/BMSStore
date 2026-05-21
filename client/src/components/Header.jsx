@@ -352,7 +352,7 @@ export default function Header() {
                 onClick={() => { navigate('/products'); setShowCatMenu(false) }}
                 onMouseEnter={() => setShowCatMenu(true)}
               >
-                <GridIcon /> Products <ChevronDown />
+                <GridIcon /> Produits <ChevronDown />
               </button>
 
               {showCatMenu && (
