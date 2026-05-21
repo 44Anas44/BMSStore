@@ -4,11 +4,11 @@ import axios from 'axios'
 const api = axios.create({ baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api' })
 
 const STATUS_LABELS = {
-  waiting:          { label:'Waiting',          color:'#f59e0b', bg:'#fef3c7', desc:'Your device has been received and is waiting to be assigned.' },
-  being_treated:    { label:'Being Treated',    color:'#3b82f6', bg:'#dbeafe', desc:'A technician is currently examining your device.' },
-  problem_detected: { label:'Problem Detected', color:'#8b5cf6', bg:'#ede9fe', desc:'We have identified the issue. Please review the details and confirm to proceed with repair.' },
-  repairing:        { label:'Repairing',        color:'#06b6d4', bg:'#cffafe', desc:'Your device is being repaired.' },
-  repaired:         { label:'Repaired',         color:'#22c55e', bg:'#dcfce7', desc:'Your device has been repaired and is ready for pickup.' },
+  waiting:          { label:'En attente',          color:'#f59e0b', bg:'#fef3c7', desc:'Votre appareil a été reçu et est en attente d\'attribution.' },
+  being_treated:    { label:'En cours de traitement',    color:'#3b82f6', bg:'#dbeafe', desc:'Un technicien examine actuellement votre appareil.' },
+  problem_detected: { label:'Problème Détecté', color:'#8b5cf6', bg:'#ede9fe', desc:'Nous avons identifié le problème. Veuillez vérifier les détails et confirmer pour procéder à la réparation.' },
+  repairing:        { label:'En Réparation',        color:'#06b6d4', bg:'#cffafe', desc:'Votre appareil est en cours de réparation.' },
+  repaired:         { label:'Réparé',         color:'#22c55e', bg:'#dcfce7', desc:'Votre appareil a été réparé et est prêt pour le retrait.' },
 }
 
 const STEPS_ORDER = ['waiting','being_treated','problem_detected','repairing','repaired']
@@ -24,13 +24,13 @@ export default function DiagnosticsPage() {
 
   const lookup = async (e) => {
     e.preventDefault()
-    if (!orderId.trim() || !code.trim()) return setError('Please enter both Order ID and Code')
+    if (!orderId.trim() || !code.trim()) return setError('Veuillez saisir l\'ID de commande et le code')
     setLoading(true); setError(''); setResult(null)
     try {
       const { data } = await api.get('/diagnostics/lookup', { params: { orderId: orderId.trim(), code: code.trim() } })
       setResult(data)
     } catch (err) {
-      setError(err.response?.data?.error || 'Not found. Check your Order ID and Code.')
+      setError(err.response?.data?.error || 'Introuvable. Vérifiez votre ID de commande et votre code.')
     } finally { setLoading(false) }
   }
 
@@ -40,7 +40,7 @@ export default function DiagnosticsPage() {
       const { data } = await api.patch(`/diagnostics/confirm/${result._id}`, { code: code.trim() })
       setResult(data); setConfirmed(true)
     } catch (err) {
-      setError(err.response?.data?.error || 'Confirmation failed')
+      setError(err.response?.data?.error || 'Échec de la confirmation')
     } finally { setConfirming(false) }
   }
 
@@ -73,7 +73,7 @@ export default function DiagnosticsPage() {
         {error && <p style={{ color:'#ef4444', fontSize:13, marginBottom:12 }}>{error}</p>}
         <button type="submit" disabled={loading}
           style={{ width:'100%', padding:'12px', border:'none', borderRadius:10, background:'var(--primary)', color:'var(--secondary)', fontSize:15, fontWeight:700, cursor:loading?'wait':'pointer', fontFamily:'inherit', opacity:loading?0.7:1 }}>
-          {loading ? 'Looking up...' : 'Track Repair'}
+          {loading ? 'Recherche...' : 'Suivi Réparation'}
         </button>
       </form>
 
@@ -142,7 +142,7 @@ export default function DiagnosticsPage() {
                 ) : (
                   <button onClick={confirmPrice} disabled={confirming}
                     style={{ background:'var(--primary)', color:'var(--secondary)', border:'none', borderRadius:9, padding:'10px 24px', fontWeight:700, fontSize:14, cursor:'pointer', fontFamily:'inherit', opacity:confirming?0.7:1 }}>
-                    {confirming ? 'Confirming...' : 'Confirm & Proceed with Repair'}
+                    {confirming ? 'Confirmation...' : 'Confirmer et Procéder à la Réparation'}
                   </button>
                 )}
               </div>
