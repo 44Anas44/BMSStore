@@ -23,7 +23,7 @@ function SkeletonCard() {
 }
 
 // ─── Section header ────────────────────────────────────────────────────────────
-function SectionHeader({ eyebrow, title, sub, linkTo, linkLabel = 'View all' }) {
+function SectionHeader({ eyebrow, title, sub, linkTo, linkLabel = 'Voir tout' }) {
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 28, flexWrap: 'wrap', gap: 10 }}>
       <div>
@@ -71,7 +71,7 @@ function CategorySection({ categories, loading }) {
 
   return (
     <section style={{ maxWidth: 1200, margin: '0 auto', padding: '64px 24px 0' }}>
-      <SectionHeader eyebrow="Browse" title="Shop by Category" sub="Find exactly what you're looking for" linkTo="/products" />
+      <SectionHeader eyebrow="Parcourir" title="Acheter par Catégorie" sub="Trouvez exactement ce que vous cherchez" linkTo="/products" />
       {loading ? (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(160px,1fr))', gap: 14 }}>
           {[...Array(6)].map((_,i) => (
@@ -102,10 +102,10 @@ function CategorySection({ categories, loading }) {
 
 // ─── Trust bar ─────────────────────────────────────────────────────────────────
 const TRUST = [
-  { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>, title: 'Fast Delivery', desc: 'Shipped & tracked' },
-  { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>, title: 'Secure Payments', desc: 'Protected transactions' },
-  { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>, title: 'Easy Returns', desc: '30-day hassle-free' },
-  { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>, title: '24/7 Support', desc: 'Always here for you' },
+  { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>, title: 'Livraison Rapide', desc: 'Expédié et suivi' },
+  { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>, title: 'Paiements Sécurisés', desc: 'Transactions protégées' },
+  { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>, title: 'Retours Faciles', desc: 'Sans tracas pendant 30 jours' },
+  { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>, title: 'Support 24/7', desc: 'Toujours disponible' },
 ]
 
 function TrustBar() {
@@ -186,10 +186,10 @@ function PromoBanner({ products }) {
       <div style={{ background: 'linear-gradient(135deg,#9c155f 0%,#b91c6e 100%)', borderRadius: 14, padding: '18px 20px', display: 'flex', alignItems: 'center', gap: 16, overflow: 'hidden' }}>
         <div style={{ color: '#fff', flexShrink: 0 }}>
           <p style={{ fontSize: 10, fontWeight: 700, opacity: 0.6, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 2 }}>Limited Time</p>
-          <p style={{ fontSize: 18, fontWeight: 900, lineHeight: 1.1, marginBottom: 10 }}>🔥 Hot Deals</p>
+          <p style={{ fontSize: 18, fontWeight: 900, lineHeight: 1.1, marginBottom: 10 }}>🔥 Bons Plans</p>
           <Link to="/products?isPromo=true"
             style={{ display: 'inline-block', textDecoration: 'none', background: '#f97316', color: '#fff', padding: '7px 16px', borderRadius: 8, fontWeight: 700, fontSize: 12, whiteSpace: 'nowrap' }}>
-            Shop Deals →
+            Voir les Offres →
           </Link>
         </div>
         <div style={{ display: 'flex', gap: 8, overflowX: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none', flex: 1 }}>
@@ -216,15 +216,15 @@ function Newsletter() {
       <div style={{ maxWidth: 500, margin: '0 auto', textAlign: 'center' }}>
         <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--primary)', opacity: 0.55, letterSpacing: 1.2, textTransform: 'uppercase', marginBottom: 10 }}>Stay Updated</p>
         <h2 style={{ fontSize: 24, fontWeight: 800, letterSpacing: -0.3, marginBottom: 10 }}>Get exclusive deals first</h2>
-        <p style={{ fontSize: 14, color: '#888', marginBottom: 28, lineHeight: 1.6 }}>Subscribe and be the first to know about new arrivals, special offers, and flash sales.</p>
+        <p style={{ fontSize: 14, color: '#888', marginBottom: 28, lineHeight: 1.6 }}>Abonnez-vous et soyez le premier informé des nouveautés, offres spéciales et ventes flash.</p>
         {sent ? (
           <div style={{ background: '#dcfce7', border: '1px solid #86efac', borderRadius: 10, padding: '14px 20px', color: '#166534', fontWeight: 600, fontSize: 14 }}>
-            ✅ Subscribed! Thanks for joining.
+            ✅ Abonné(e) ! Merci de nous rejoindre.
           </div>
         ) : (
           <div style={{ display: 'flex', gap: 8, maxWidth: 420, margin: '0 auto' }}>
             <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-              placeholder="Your email address"
+              placeholder="Votre adresse e-mail"
               style={{ flex: 1, padding: '12px 16px', border: '1.5px solid #ddd', borderRadius: 10, fontSize: 14, outline: 'none', fontFamily: 'inherit', background: '#fff' }} />
             <button onClick={() => email.includes('@') && setSent(true)}
               style={{ background: '#f97316', color: '#fff', border: 'none', borderRadius: 10, padding: '12px 20px', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
@@ -308,14 +308,14 @@ export default function HomePage() {
       <HeroSlider />
       <TrustBar />
 
-      {/* 1. Latest Products — always first, real-time from DB */}
+      {/* 1. Derniers Produits — always first, real-time from DB */}
       <section style={{ maxWidth: 1200, margin: '0 auto', padding: '64px 24px 0' }}>
         <SectionHeader
-          eyebrow="Just In"
-          title="Latest Products"
-          sub="Fresh arrivals added to our catalog — be the first to grab them"
+          eyebrow="Vient d'arriver"
+          title="Derniers Produits"
+          sub="Nouveaux arrivages dans notre catalogue — soyez le premier à les obtenir"
           linkTo="/products?sort=newest"
-          linkLabel="See all new"
+          linkLabel="Voir toutes les nouveautés"
         />
         <ProductSlider products={latest} loading={loadingLatest} />
       </section>
@@ -329,11 +329,11 @@ export default function HomePage() {
       {/* 4. Most sold */}
       <section style={{ maxWidth: 1200, margin: '72px auto 0', padding: '0 24px' }}>
         <SectionHeader
-          eyebrow="Community Favourites"
-          title="Best Sellers"
-          sub="Products our customers keep coming back for"
+          eyebrow="Favoris de la Communauté"
+          title="Meilleures Ventes"
+          sub="Les produits que nos clients adorent"
           linkTo="/products?sort=popular"
-          linkLabel="See all"
+          linkLabel="Voir tout"
         />
         <ProductSlider products={popular} loading={loadingPopular} />
       </section>
