@@ -40,7 +40,7 @@ export default function ProductPage() {
               <span style={{ textDecoration: 'line-through', color: '#bbb', fontSize: 18 }}>{product.comparePrice.toFixed(2)}</span>
             )}
           </div>
-          <p style={{ fontSize: 13, color: '#888', marginBottom: 6 }}>Category: {product.category?.name || '—'}</p>
+          <p style={{ fontSize: 13, color: '#888', marginBottom: 6 }}>Catégorie : {product.category?.name || '—'}</p>
           {product.stock > 0 ? (
             <p style={{ fontSize: 13, color: '#22c55e', fontWeight: 600, marginBottom: 24 }}>✓ In stock: {product.stock} available</p>
           ) : (
@@ -60,9 +60,9 @@ export default function ProductPage() {
               onClick={() => {
                 const result = addItem(product, qty)
                 if (result?.clamped) {
-                  toast.success(`Added to cart (only ${result.available} available — quantity adjusted)`)
+                  toast.success(`Ajouté au panier (seulement ${result.available} disponible(s) — quantité ajustée)`)
                 } else {
-                  toast.success(`${qty}× added to cart!`)
+                  toast.success(`${qty}× ajouté(s) au panier !')
                 }
               }}>
               🛒 Add to Cart
