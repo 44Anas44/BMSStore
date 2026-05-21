@@ -112,13 +112,7 @@ const ColTitle = ({ children }) => (
   </p>
 )
 
-/* ── Trust bar items ─────────────────────────────────── */
-const trustItems = [
-  { icon: <TruckIcon />,      label: 'Fast Delivery',   sub: 'Tracked shipping' },
-  { icon: <ShieldIcon />,     label: 'Secure Payments', sub: '100% safe checkout' },
-  { icon: <RefreshIcon />,    label: 'Easy Returns',    sub: '30-day policy' },
-  { icon: <HeadphonesIcon />, label: '24/7 Support',    sub: 'Always here to help' },
-]
+
 
 /* ── Main Footer ─────────────────────────────────────── */
 export default function Footer() {
@@ -128,15 +122,7 @@ export default function Footer() {
       {/* Trust bar */}
       <div style={{background:'#8a1254',borderBottom:'1px solid rgba(255,255,255,0.08)'}}>
         <div style={{maxWidth:1280,margin:'0 auto',padding:'0 24px',display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(160px,1fr))',gap:'0'}}>
-          {trustItems.map(({ icon, label, sub }) => (
-            <div key={label} style={{display:'flex',alignItems:'center',gap:14,padding:'18px 16px',borderRight:'1px solid rgba(255,255,255,0.07)'}}>
-              <span style={{color:'rgba(255,255,255,0.85)',flexShrink:0}}>{icon}</span>
-              <div>
-                <div style={{fontWeight:700,fontSize:13.5,color:'#fff'}}>{label}</div>
-                <div style={{fontSize:12,color:'rgba(255,255,255,0.5)',marginTop:2}}>{sub}</div>
-              </div>
-            </div>
-          ))}
+         
         </div>
       </div>
 
