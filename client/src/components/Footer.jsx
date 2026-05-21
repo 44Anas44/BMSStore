@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { categoriesApi } from '../lib/api'
 
 const BRAND   = import.meta.env.VITE_BRAND_NAME     || 'BMS Store'
 const LOGO    = import.meta.env.VITE_LOGO_URL        || 'https://res.cloudinary.com/dktehnkms/image/upload/v1778760350/Logo-BMS_zoxgfa.jpg'
@@ -50,11 +49,6 @@ const ClockIcon = () => (
     <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
   </svg>
 )
-const ChevronDown = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="6 9 12 15 18 9"/>
-  </svg>
-)
 
 /* Trust bar SVG icons */
 const TruckIcon = () => (
@@ -81,19 +75,6 @@ const HeadphonesIcon = () => (
   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
     <path d="M3 18v-6a9 9 0 0118 0v6"/>
     <path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/>
-  </svg>
-)
-const VisaIcon = () => (
-  <svg width="28" height="18" viewBox="0 0 48 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="48" height="30" rx="4" fill="rgba(255,255,255,0.12)"/>
-    <text x="24" y="21" textAnchor="middle" fill="rgba(255,255,255,0.8)" fontSize="13" fontWeight="800" fontFamily="serif" letterSpacing="1">VISA</text>
-  </svg>
-)
-const CashIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="2" y="6" width="20" height="12" rx="2"/>
-    <circle cx="12" cy="12" r="3"/>
-    <path d="M6 12h.01M18 12h.01"/>
   </svg>
 )
 
@@ -131,32 +112,6 @@ const ColTitle = ({ children }) => (
   </p>
 )
 
-/* ── Mobile accordion for categories ─────────────────── */
-function MobileCatGroup({ cat }) {
-  const [open, setOpen] = useState(false)
-  const subs = cat.children || cat.subcategories || []
-  const cid  = cat._id || cat.id
-  return (
-    <div style={{borderBottom:'1px solid rgba(255,255,255,0.08)'}}>
-      <div
-        onClick={() => setOpen(o => !o)}
-        style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'11px 0',cursor:'pointer',fontSize:13.5,fontWeight:600,color:'rgba(255,255,255,0.75)'}}
-      >
-        <span>{cat.name}</span>
-        <span style={{transition:'transform .2s',transform:open?'rotate(180deg)':'rotate(0deg)'}}><ChevronDown /></span>
-      </div>
-      {open && (
-        <div style={{paddingBottom:8,paddingLeft:12}}>
-          <FooterLink to={`/products?category=${cid}`}>All in {cat.name}</FooterLink>
-          {subs.map(sub => (
-            <FooterLink key={sub._id||sub.id} to={`/products?category=${sub._id||sub.id}`}>{sub.name}</FooterLink>
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
-
 /* ── Trust bar items ─────────────────────────────────── */
 const trustItems = [
   { icon: <TruckIcon />,      label: 'Fast Delivery',   sub: 'Tracked shipping' },
@@ -167,14 +122,6 @@ const trustItems = [
 
 /* ── Main Footer ─────────────────────────────────────── */
 export default function Footer() {
-  const [categories, setCategories] = useState([])
-
-  useEffect(() => {
-    categoriesApi.getTree()
-      .then(data => setCategories(Array.isArray(data) ? data.slice(0, 6) : []))
-      .catch(() => {})
-  }, [])
-
   return (
     <footer style={{background:'#9c155f',color:'#fff',marginTop:80}}>
 
@@ -196,8 +143,8 @@ export default function Footer() {
       {/* Orange gradient divider */}
       <div style={{height:4,background:'linear-gradient(90deg,#f97316 0%,#fbbf24 60%,#f97316 100%)'}}/>
 
-      {/* Main footer grid */}
-      <div style={{maxWidth:1280,margin:'0 auto',padding:'56px 24px 48px',display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(210px,1fr))',gap:'48px 40px'}}>
+      {/* Main footer grid — now just Brand + Navigation + Contact */}
+      <div style={{maxWidth:1280,margin:'0 auto',padding:'48px 24px 40px',display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(210px,1fr))',gap:'40px 40px'}}>
 
         {/* Brand column */}
         <div>
@@ -213,18 +160,6 @@ export default function Footer() {
             {FB && FB !== '#' && <SocialBtn href={FB} title="Facebook"><FacebookIcon /></SocialBtn>}
             <SocialBtn href="#" title="TikTok"><TikTokIcon /></SocialBtn>
           </div>
-          <div style={{marginTop:24,padding:'14px 16px',background:'rgba(255,255,255,0.06)',borderRadius:10,border:'1px solid rgba(255,255,255,0.1)'}}>
-            <div style={{fontSize:11,fontWeight:700,textTransform:'uppercase',letterSpacing:1,color:'#f97316',marginBottom:6}}>Newsletter</div>
-            <div style={{display:'flex',gap:0}}>
-              <input
-                type="email" placeholder="your@email.com"
-                style={{flex:1,padding:'8px 12px',border:'none',borderRadius:'8px 0 0 8px',fontSize:13,background:'rgba(255,255,255,0.12)',color:'#fff',outline:'none'}}
-              />
-              <button style={{padding:'8px 14px',background:'#f97316',border:'none',borderRadius:'0 8px 8px 0',color:'#fff',fontWeight:700,fontSize:12,cursor:'pointer'}}>
-                OK
-              </button>
-            </div>
-          </div>
         </div>
 
         {/* Navigation column */}
@@ -235,29 +170,6 @@ export default function Footer() {
           <FooterLink to="/products?sort=newest">New Arrivals</FooterLink>
           <FooterLink to="/products?isPromo=true">Deals &amp; Promos</FooterLink>
           <FooterLink to="/cart">My Cart</FooterLink>
-        </div>
-
-        {/* Categories column (desktop: static links; mobile: accordion) */}
-        <div>
-          <ColTitle>Categories</ColTitle>
-          {categories.length === 0 ? (
-            <p style={{color:'rgba(255,255,255,0.35)',fontSize:13}}>Loading…</p>
-          ) : (
-            <>
-              {/* Desktop */}
-              <div className="ftr-cats-desktop">
-                {categories.map(cat => {
-                  const cid = cat._id || cat.id
-                  return <FooterLink key={cid} to={`/products?category=${cid}`}>{cat.name}</FooterLink>
-                })}
-                <FooterLink to="/products">Browse All →</FooterLink>
-              </div>
-              {/* Mobile accordion */}
-              <div className="ftr-cats-mobile">
-                {categories.map(cat => <MobileCatGroup key={cat._id||cat.id} cat={cat} />)}
-              </div>
-            </>
-          )}
         </div>
 
         {/* Contact column */}
@@ -283,18 +195,6 @@ export default function Footer() {
             </a>
           )}
           {HOURS && <ContactRow icon={<ClockIcon />}>{HOURS}</ContactRow>}
-
-          {/* Payment icons */}
-          <div style={{marginTop:20}}>
-            <div style={{fontSize:11,fontWeight:700,textTransform:'uppercase',letterSpacing:1,color:'#f97316',marginBottom:10}}>We Accept</div>
-            <div style={{display:'flex',gap:8,flexWrap:'wrap',alignItems:'center'}}>
-              {['Visa','CIB','Cash','COD'].map(m => (
-                <span key={m} style={{background:'rgba(255,255,255,0.1)',border:'1px solid rgba(255,255,255,0.15)',borderRadius:6,padding:'4px 10px',fontSize:11.5,fontWeight:600,color:'rgba(255,255,255,0.75)'}}>
-                  {m}
-                </span>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
 
@@ -318,11 +218,6 @@ export default function Footer() {
 
       {/* Responsive styles */}
       <style>{`
-        .ftr-cats-mobile { display: none; }
-        @media (max-width: 640px) {
-          .ftr-cats-desktop { display: none; }
-          .ftr-cats-mobile  { display: block; }
-        }
         @media (max-width: 768px) {
           footer > div:first-child > div {
             grid-template-columns: repeat(2, 1fr) !important;
