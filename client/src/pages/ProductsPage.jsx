@@ -10,11 +10,11 @@ function FilterPanel({ filters, categories, brands, set, clear, total, closeDraw
   return (
     <div style={{ border:'1px solid #eee', borderRadius:14, padding:'18px 16px', background:'#fff' }}>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
-        <p style={{ fontWeight:700, fontSize:14, color:'#1a1a1a' }}>Filters</p>
+        <p style={{ fontWeight:700, fontSize:14, color:'#1a1a1a' }}>Filtres</p>
         <button onClick={clear} style={{ background:'none', border:'none', fontSize:12, color:'#f97316', fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>Clear all</button>
       </div>
       <div style={{ position:'relative', marginBottom:16 }}>
-        <input placeholder="Search products..." value={filters.search} onChange={e => set('search', e.target.value)} style={{ ...inp, paddingLeft:32 }}/>
+        <input placeholder="Rechercher des produits..." value={filters.search} onChange={e => set('search', e.target.value)} style={{ ...inp, paddingLeft:32 }}/>
         <svg style={{ position:'absolute', left:10, top:'50%', transform:'translateY(-50%)' }} width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#bbb" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       </div>
       <label style={lbl}>Category</label>
@@ -152,7 +152,7 @@ export default function ProductsPage() {
           <div className="pr-drawer-overlay" onClick={() => setDrawerOpen(false)} />
           <div className="pr-drawer">
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
-              <p style={{ fontWeight:800, fontSize:16 }}>Filters</p>
+              <p style={{ fontWeight:800, fontSize:16 }}>Filtres</p>
               <label style={{ display:'block', fontSize:11, fontWeight:600, color:'#aaa', textTransform:'uppercase', letterSpacing:0.6, marginBottom:6, marginTop:16 }}>Sort By</label>
             <select value={filters.sort} onChange={e => set('sort', e.target.value)} style={{ width:'100%', padding:'9px 12px', border:'1px solid #e5e5e5', borderRadius:8, fontSize:13, fontFamily:'inherit', outline:'none', background:'#fff', color:'#1a1a1a', boxSizing:'border-box', cursor:'pointer', marginBottom:8 }}>
               <option value="default">Default</option>
@@ -166,7 +166,7 @@ export default function ProductsPage() {
             <FilterPanel filters={filters} categories={categories} brands={brands} set={set} clear={clear} total={total} />
             <button onClick={() => setDrawerOpen(false)}
               style={{ width:'100%', marginTop:16, padding:'13px', background:'#9c155f', color:'#fff', border:'none', borderRadius:10, fontWeight:700, fontSize:15, cursor:'pointer', fontFamily:'inherit' }}>
-              Show Results ({total})
+              Voir les Résultats ({total})
             </button>
           </div>
         </>
