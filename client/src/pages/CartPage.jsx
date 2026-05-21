@@ -11,7 +11,7 @@ export default function CartPage() {
   const [loading, setLoading] = useState(false)
 
   const placeOrder = async () => {
-    if (!form.name || !form.address || !form.phone) return toast.error('Please fill all required fields')
+    if (!form.name || !form.address || !form.phone) return toast.error('Veuillez remplir tous les champs obligatoires')
     setLoading(true)
     try {
       const result = await ordersApi.create({
@@ -22,9 +22,9 @@ export default function CartPage() {
       clear()
       setShowForm(false)
       if (result?.warnings?.length) result.warnings.forEach(w => toast(w, { icon: '⚠️', duration: 5000 }))
-      toast.success('✅ Order placed! You will be contacted soon.')
+      toast.success('✅ Commande passée ! Vous serez contacté(e) bientôt.')
     } catch (e) {
-      toast.error(e?.response?.data?.error || 'Failed to place order. Please try again.')
+      toast.error(e?.response?.data?.error || 'Échec de la commande. Veuillez réessayer.')
     } finally { setLoading(false) }
   }
 
@@ -34,7 +34,7 @@ export default function CartPage() {
         <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
       </svg>
       <p style={{ fontSize: 22, fontWeight: 600, marginBottom: 8 }}>Your cart is empty</p>
-      <a href="/products" className="btn-primary" style={{ display: 'inline-block', textDecoration: 'none', marginTop: 16 }}>Browse Products</a>
+      <a href="/products" className="btn-primary" style={{ display: 'inline-block', textDecoration: 'none', marginTop: 16 }}>Parcourir les Produits</a>
     </div>
   )
 
@@ -61,7 +61,7 @@ export default function CartPage() {
       `}</style>
 
       <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 20, color: '#1a1a1a' }}>
-        Your Cart <span style={{ fontSize: 14, fontWeight: 400, color: '#aaa' }}>({items.length} item{items.length !== 1 ? 's' : ''})</span>
+        Votre Panier <span style={{ fontSize: 14, fontWeight: 400, color: '#aaa' }}>({items.length} article{items.length !== 1 ? 's' : ''})</span>
       </h1>
 
       {items.map(item => (
@@ -79,7 +79,7 @@ export default function CartPage() {
               <span className="qty-val">{item.qty}</span>
               <button className="qty-btn" onClick={() => {
                 if (item.qty < (item.stock || Infinity)) updateQty(item._id, item.qty + 1)
-                else toast.error('Maximum stock reached')
+                else toast.error('Stock maximum atteint')
               }}>+</button>
             </div>
             <span className="cart-item-subtotal">{(item.price * item.qty).toFixed(2)} TND</span>
@@ -99,7 +99,7 @@ export default function CartPage() {
           <div style={{ background: '#fff', borderRadius: '20px 20px 0 0', padding: '24px 20px 36px', width: '100%', maxWidth: 520 }}>
             <div style={{ width: 36, height: 4, background: '#ddd', borderRadius: 2, margin: '0 auto 20px' }} />
             <h2 style={{ fontWeight: 800, marginBottom: 20, fontSize: 18 }}>Complete your order</h2>
-            {[['name','Full Name *','text'],['address','Delivery Address *','text'],['phone','Phone Number *','tel'],['email','Email (optional)','email']].map(([k, label, type]) => (
+            {[['name','Nom Complet *','text'],['address','Adresse de Livraison *','text'],['phone','Numéro de Téléphone *','tel'],['email','E-mail (facultatif)','email']].map(([k, label, type]) => (
               <div key={k} style={{ marginBottom: 14 }}>
                 <label style={{ display: 'block', fontSize: 12, color: '#888', marginBottom: 5, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>{label}</label>
                 <input type={type} value={form[k]} onChange={e => setForm(f => ({ ...f, [k]: e.target.value }))}
@@ -113,7 +113,7 @@ export default function CartPage() {
               </button>
               <button onClick={placeOrder} disabled={loading}
                 style={{ flex: 2, padding: '13px', border: 'none', borderRadius: 10, background: '#9c155f', color: '#fff', fontSize: 15, cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700 }}>
-                {loading ? 'Placing...' : '✅ Confirm Order'}
+                {loading ? 'Traitement...' : '✅ Confirmer la Commande'}
               </button>
             </div>
           </div>
