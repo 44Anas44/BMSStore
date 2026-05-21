@@ -142,20 +142,20 @@ export default function Header() {
     setMobileExpandedCats(prev => ({ ...prev, [id]: !prev[id] }))
 
   const navItems = [
-    { label: 'Home',         to: '/' },
-    { label: 'New Arrivals', to: '/products?sort=newest' },
-    { label: 'Deals',        to: '/products?isPromo=true' },
-    ...(HAS_SECONDHAND  ? [{ label: 'Second Hand',  to: '/secondhand'  }] : []),
-    ...(HAS_DIAGNOSTICS ? [{ label: 'Track Repair', to: '/diagnostics' }] : []),
+    { label: 'Accueil',         to: '/' },
+    { label: 'Nouveautés', to: '/products?sort=newest' },
+    { label: 'Promotions',        to: '/products?isPromo=true' },
+    ...(HAS_SECONDHAND  ? [{ label: 'Seconde Main',  to: '/secondhand'  }] : []),
+    ...(HAS_DIAGNOSTICS ? [{ label: 'Suivi Réparation', to: '/diagnostics' }] : []),
   ]
   // Mobile drawer gets Products link separately since desktop has the dropdown
   const mobileNavItems = [
-    { label: 'Home',         to: '/' },
-    { label: 'All Products', to: '/products' },
-    { label: 'New Arrivals', to: '/products?sort=newest' },
-    { label: 'Deals',        to: '/products?isPromo=true' },
-    ...(HAS_SECONDHAND  ? [{ label: 'Second Hand',  to: '/secondhand'  }] : []),
-    ...(HAS_DIAGNOSTICS ? [{ label: 'Track Repair', to: '/diagnostics' }] : []),
+    { label: 'Accueil',         to: '/' },
+    { label: 'Tous les Produits', to: '/products' },
+    { label: 'Nouveautés', to: '/products?sort=newest' },
+    { label: 'Promotions',        to: '/products?isPromo=true' },
+    ...(HAS_SECONDHAND  ? [{ label: 'Seconde Main',  to: '/secondhand'  }] : []),
+    ...(HAS_DIAGNOSTICS ? [{ label: 'Suivi Réparation', to: '/diagnostics' }] : []),
   ]
 
   const activeCat = categories.find(c => c._id === hoveredCat) || categories[0] || null
@@ -266,8 +266,8 @@ export default function Header() {
           <div className="hdr-top-inner">
             <a href={`tel:${PHONE}`} className="hdr-phone"><PhoneIcon /> {PHONE}</a>
             <div style={{display:'flex',alignItems:'center',gap:10}}>
-              <span className="hdr-badge hdr-top-promo">Free delivery on orders over 200 TND</span>
-              <span style={{opacity:.55}}>Mon–Sat 9am–6pm</span>
+              <span className="hdr-badge hdr-top-promo">Livraison gratuite dès 200 TND d'achat</span>
+              <span style={{opacity:.55}}>Lun–Sam 9h–18h</span>
             </div>
           </div>
         </div>
@@ -287,18 +287,18 @@ export default function Header() {
               <form className="hdr-search-form" onSubmit={handleSearch}>
                 <input
                   type="text" className="hdr-search-input" autoComplete="off"
-                  placeholder="Search for products, brands, categories…"
+                  placeholder="Rechercher des produits, marques, catégories…"
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   onFocus={() => suggestions.length > 0 && setShowSuggest(true)}
                 />
-                <button type="submit" className="hdr-search-btn" aria-label="Search"><SearchIcon /></button>
+                <button type="submit" className="hdr-search-btn" aria-label="Rechercher"><SearchIcon /></button>
               </form>
 
               {showSuggest && (
                 <div className="hdr-suggest">
                   <div className="hdr-suggest-header">
-                    {loadingSuggest ? 'Searching…' : `Results for "${debounced}"`}
+                    {loadingSuggest ? 'Recherche…' : `Résultats pour "${debounced}"`}
                   </div>
                   {loadingSuggest ? (
                     <div className="hdr-suggest-info">Loading suggestions…</div>
@@ -322,7 +322,7 @@ export default function Header() {
                         )
                       })}
                       <div className="hdr-suggest-footer">
-                        <button onClick={handleSearch}>View all results for &ldquo;{debounced}&rdquo; →</button>
+                        <button onClick={handleSearch}>Voir tous les résultats pour &ldquo;{debounced}&rdquo; →</button>
                       </div>
                     </>
                   )}
@@ -330,9 +330,9 @@ export default function Header() {
               )}
             </div>
 
-            <Link to="/cart" className="hdr-cart" title="View cart">
+            <Link to="/cart" className="hdr-cart" title="Voir le panier">
               <CartIcon />
-              <span className="hdr-cart-label">Cart</span>
+              <span className="hdr-cart-label">Panier</span>
               {count > 0 && <span className="hdr-cart-count">{count > 99 ? '99+' : count}</span>}
             </Link>
 
@@ -401,7 +401,7 @@ export default function Header() {
                             </div>
                         }
                         <Link to={`/products?category=${activeCat._id || activeCat.id}`} className="hdr-mega-all" onClick={() => setShowCatMenu(false)}>
-                          View all in {activeCat.name} →
+                          Voir tout dans {activeCat.name} →
                         </Link>
                       </>
                     ) : <div className="hdr-mega-empty">Select a category</div>}
@@ -481,7 +481,7 @@ export default function Header() {
             )}
 
             <Link to="/cart" className="hdr-drawer-link" onClick={() => setMenuOpen(false)}>
-              Cart {count > 0 && `(${count})`}
+              Panier {count > 0 && `(${count})`}
             </Link>
           </div>
         </>
