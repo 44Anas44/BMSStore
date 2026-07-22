@@ -278,7 +278,7 @@ export default function Header() {
             <Link to="/" className="hdr-logo">
               {LOGO && <img src={LOGO} alt={LOGO_ALT} />}
               <span className="hdr-logo-name">
-               BMS <span>IT</span></>
+               {BRAND.length > 1 ? <>{BRAND.slice(0,-1)}<span>{BRAND.slice(-1)}</span></> : BRAND}
               </span>
             </Link>
 
