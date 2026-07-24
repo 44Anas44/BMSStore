@@ -62,7 +62,7 @@ export default function ProductPage() {
                 if (result?.clamped) {
                   toast.success(`Ajouté au panier (seulement ${result.available} disponible(s) — quantité ajustée)`)
                 } else {
-                  toast.success(`${qty}× ajouté(s) au panier !')
+                  toast.success(`${qty}× ajouté(s) au panier !`)
                 }
               }}>
               🛒 Add to Cart
