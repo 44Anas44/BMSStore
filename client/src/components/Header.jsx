@@ -6,7 +6,7 @@ import { categoriesApi, productsApi } from '../lib/api'
 const BRAND    ='BMS IT'
 const LOGO     = import.meta.env.VITE_LOGO_URL   || 'https://res.cloudinary.com/dktehnkms/image/upload/v1778760350/Logo-BMS_zoxgfa.jpg'
 const LOGO_ALT = import.meta.env.VITE_LOGO_ALT   || 'BMS logo'
-const PHONE    = import.meta.env.VITE_CONTACT_PHONE || '+21629226349'
+const PHONE    = '+99960432'
 
 const CartIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
