@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useCartStore } from '../store/cartStore'
 import { categoriesApi, productsApi } from '../lib/api'
 
-const BRAND    = import.meta.env.VITE_BRAND_NAME || 'BMS IT'
+const BRAND    ='BMS IT'
 const LOGO     = import.meta.env.VITE_LOGO_URL   || 'https://res.cloudinary.com/dktehnkms/image/upload/v1778760350/Logo-BMS_zoxgfa.jpg'
 const LOGO_ALT = import.meta.env.VITE_LOGO_ALT   || 'BMS logo'
 const PHONE    = import.meta.env.VITE_CONTACT_PHONE || '+21629226349'
