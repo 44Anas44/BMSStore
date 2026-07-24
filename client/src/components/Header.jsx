@@ -267,7 +267,7 @@ export default function Header() {
             <a href={`tel:${PHONE}`} className="hdr-phone"><PhoneIcon /> {PHONE}</a>
             <div style={{display:'flex',alignItems:'center',gap:10}}>
               <span className="hdr-badge hdr-top-promo">Livraison gratuite dès 200 TND d'achat</span>
-              <span style={{opacity:.55}}>Lun–Sam 9h–18h</span>
+              <span style={{opacity:.55}}>Lun–Ven 8h–17h / sam 8h-13h</span>
             </div>
           </div>
         </div>
