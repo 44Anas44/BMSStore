@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 const BRAND   = import.meta.env.VITE_BRAND_NAME     || 'BMS Store'
-const LOGO    = 'https://res.cloudinary.com/dktehnkms/image/upload/v1778760350/Logo-BMS_zoxgfa.jpg'
+const LOGO    = 'https://res.cloudinary.com/dktehnkms/image/upload/v1777646852/Gemini_Generated_Image_5wzab5wzab5wzab5-removebg-preview_jbjndd.png'
 const ADDRESS = 'Rue El Akkad, Manouba 2010'
 const PHONE   ='+21699960432'
 const EMAIL   = 'bms.informatique@gmail.com'
