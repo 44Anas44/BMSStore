@@ -100,6 +100,53 @@ function CategorySection({ categories, loading }) {
   )
 }
 
+// ─── Security Camera spotlight (styled like Best Sellers) ─────────────────────
+// Looks for a category named "Security Camera" (case-insensitive, matches
+// "Security Camera", "Caméra de Sécurité", etc. via loose matching) among ALL
+// categories (not just root ones, since it may be a subcategory), then loads
+// its products the same way the Best Sellers section loads popular products.
+function SecurityCameraSection() {
+  const [category, setCategory] = useState(null)
+  const [products, setProducts] = useState([])
+  const [loading,  setLoading]  = useState(true)
+  const [checked,  setChecked]  = useState(false)
+
+  useEffect(() => {
+    categoriesApi.getAll()
+      .then(cats => {
+        const match = cats.find(c => {
+          const n = c.name?.trim().toLowerCase() || ''
+          return n === 'security camera' || n === 'camera de securite' ||
+                 (n.includes('security') && n.includes('camera')) ||
+                 (n.includes('sécurité') && n.includes('caméra'))
+        })
+        setCategory(match || null)
+        if (!match) { setLoading(false); setChecked(true); return }
+        return productsApi.getAll({ category: match._id, limit: 8 })
+          .then(d => setProducts(d.products || d))
+      })
+      .catch(console.error)
+      .finally(() => { setLoading(false); setChecked(true) })
+  }, [])
+
+  // Nothing to show — no matching category exists yet, or it has no products
+  if (checked && !category) return null
+  if (checked && category && !loading && products.length === 0) return null
+
+  return (
+    <section style={{ maxWidth: 1200, margin: '72px auto 0', padding: '0 24px' }}>
+      <SectionHeader
+        eyebrow="Sécurité & Surveillance"
+        title="Caméras de Sécurité"
+        sub="Protégez ce qui compte avec notre sélection de caméras de surveillance"
+        linkTo={category ? `/products?category=${category._id}` : '/products'}
+        linkLabel="Voir tout"
+      />
+      <ProductSlider products={products} loading={loading} />
+    </section>
+  )
+}
+
 // ─── Trust bar ─────────────────────────────────────────────────────────────────
 const TRUST = [
   { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>, title: 'Livraison Rapide', desc: 'Expédié et suivi' },
@@ -322,6 +369,9 @@ export default function HomePage() {
 
       {/* 2. Categories with images managed from admin */}
       <CategorySection categories={categories} loading={loadingCats} />
+
+      {/* 2b. Security Camera zone — only shows if a "Security Camera" category exists with products */}
+      <SecurityCameraSection />
 
       {/* 3. Promo banner + promo products */}
       {(loadingPromos || promos.length > 0) && <PromoBanner products={promos} />}
