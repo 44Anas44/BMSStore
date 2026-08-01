@@ -8,7 +8,7 @@ const PHONE   ='+21699960432'
 const EMAIL   = 'bms.informatique@gmail.com'
 const HOURS   = 'Lun–Ven 8h–17h / sam 8h-13h'
 const IG      = import.meta.env.VITE_INSTAGRAM       || '#'
-const FB      = import.meta.env.VITE_FACEBOOK        || 'https://www.facebook.com/atef.bms'
+const FB      = 'https://www.facebook.com/atef.bms'
 
 /* ── Icons ─────────────────────────────────────────── */
 const InstagramIcon = () => (
