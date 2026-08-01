@@ -99,3 +99,29 @@ export const adminApi = {
   getDashboard: () => api.get('/admin/dashboard').then(r => r.data),
 }
 
+export const teamApi = {
+  getPublic:   ()         => api.get('/team').then(r => r.data),
+  getAll:      ()         => api.get('/team/all').then(r => r.data),
+  create:      (data)     => api.post('/team', data).then(r => r.data),
+  update:      (id, data) => api.put(`/team/${id}`, data).then(r => r.data),
+  uploadPhoto: (id, file) => { const f = new FormData(); f.append('photo', file); return api.post(`/team/${id}/photo`, f).then(r => r.data) },
+  reorder:     (ids)      => api.patch('/team/reorder', { ids }).then(r => r.data),
+  delete:      (id)       => api.delete(`/team/${id}`).then(r => r.data),
+}
+
+export const achievementsApi = {
+  getPublic:   ()         => api.get('/achievements').then(r => r.data),
+  getAll:      ()         => api.get('/achievements/all').then(r => r.data),
+  create:      (data)     => api.post('/achievements', data).then(r => r.data),
+  update:      (id, data) => api.put(`/achievements/${id}`, data).then(r => r.data),
+  uploadImage: (id, file) => { const f = new FormData(); f.append('image', file); return api.post(`/achievements/${id}/image`, f).then(r => r.data) },
+  reorder:     (ids)      => api.patch('/achievements/reorder', { ids }).then(r => r.data),
+  delete:      (id)       => api.delete(`/achievements/${id}`).then(r => r.data),
+}
+
+export const aboutApi = {
+  getSettings:     ()     => api.get('/about').then(r => r.data),
+  uploadHeroImage: (file) => { const f = new FormData(); f.append('image', file); return api.post('/about/hero-image', f).then(r => r.data) },
+  deleteHeroImage: ()     => api.delete('/about/hero-image').then(r => r.data),
+}
+
