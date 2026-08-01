@@ -147,6 +147,8 @@ export default function Header() {
     { label: 'Promotions',        to: '/products?isPromo=true' },
     ...(HAS_SECONDHAND  ? [{ label: 'Seconde Main',  to: '/secondhand'  }] : []),
     ...(HAS_DIAGNOSTICS ? [{ label: 'Suivi Réparation', to: '/diagnostics' }] : []),
+    { label: 'À Propos',        to: '/about' },
+    { label: 'Blog',            to: '/blog' },
   ]
   // Mobile drawer gets Products link separately since desktop has the dropdown
   const mobileNavItems = [
@@ -156,6 +158,8 @@ export default function Header() {
     { label: 'Promotions',        to: '/products?isPromo=true' },
     ...(HAS_SECONDHAND  ? [{ label: 'Seconde Main',  to: '/secondhand'  }] : []),
     ...(HAS_DIAGNOSTICS ? [{ label: 'Suivi Réparation', to: '/diagnostics' }] : []),
+    { label: 'À Propos',        to: '/about' },
+    { label: 'Blog',            to: '/blog' },
   ]
 
   const activeCat = categories.find(c => c._id === hoveredCat) || categories[0] || null
