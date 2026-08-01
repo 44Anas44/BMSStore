@@ -170,7 +170,6 @@ export default function Footer() {
           <FooterLink to="/products?sort=newest">Nouveautés</FooterLink>
           <FooterLink to="/products?isPromo=true">Offres &amp; Promos</FooterLink>
           <FooterLink to="/about">À Propos</FooterLink>
-          <FooterLink to="/blog">Blog</FooterLink>
           <FooterLink to="/cart">Mon Panier</FooterLink>
         </div>
 
