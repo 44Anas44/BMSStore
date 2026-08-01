@@ -5,7 +5,7 @@ import ProductCard from '../components/ProductCard'
 import { productsApi, categoriesApi } from '../lib/api'
 
 const IG = import.meta.env.VITE_INSTAGRAM || ''
-const FB = import.meta.env.VITE_FACEBOOK  || 'https://www.facebook.com/atef.bms'
+const FB = 'https://www.facebook.com/atef.bms'
 
 // ─── Skeleton card ────────────────────────────────────────────────────────────
 function SkeletonCard() {
