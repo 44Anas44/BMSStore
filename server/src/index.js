@@ -54,6 +54,9 @@ app.use('/api/slides',     require('./routes/slides'))
 app.use('/api/orders',     require('./routes/orders'))
 app.use('/api/upload',     require('./routes/upload'))
 app.use('/api/admin',      require('./routes/admin'))
+app.use('/api/team',         require('./routes/team'))
+app.use('/api/achievements', require('./routes/achievements'))
+app.use('/api/about',        require('./routes/about'))
 
 // ── Optional feature routes ────────────────────────────────────────────────────
 try { app.use('/api/secondhand',  require('./routes/secondhand'))  } catch(e) {}
