@@ -8,6 +8,8 @@ import ProductPage from './pages/ProductPage'
 import CartPage from './pages/CartPage'
 import SecondHandPage  from './pages/SecondHandPage'
 import DiagnosticsPage from './pages/DiagnosticsPage'
+import AboutPage       from './pages/AboutPage'
+import BlogPage        from './pages/BlogPage'
 import AdminLogin      from './pages/admin/AdminLogin'
 import AdminLayout     from './pages/admin/AdminLayout'
 import AdminDashboard  from './pages/admin/AdminDashboard'
@@ -46,6 +48,8 @@ export default function App() {
               <Route path="cart"         element={<CartPage />} />
               <Route path="secondhand"   element={<SecondHandPage/>}/>
               <Route path="diagnostics"  element={<DiagnosticsPage/>}/>
+              <Route path="about"        element={<AboutPage/>}/>
+              <Route path="blog"         element={<BlogPage/>}/>
             </Routes>
           </main>
           <Footer />
