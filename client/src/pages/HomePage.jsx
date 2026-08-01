@@ -4,8 +4,8 @@ import HeroSlider from '../components/HeroSlider'
 import ProductCard from '../components/ProductCard'
 import { productsApi, categoriesApi } from '../lib/api'
 
-const IG = import.meta.env.VITE_INSTAGRAM || 'fcvhb:jnlk;'
-const FB = import.meta.env.VITE_FACEBOOK  || 'cghjlik'
+const IG = import.meta.env.VITE_INSTAGRAM || ''
+const FB = import.meta.env.VITE_FACEBOOK  || 'https://www.facebook.com/atef.bms'
 
 // ─── Skeleton card ────────────────────────────────────────────────────────────
 function SkeletonCard() {
