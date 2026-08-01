@@ -38,8 +38,41 @@ const brandStorage = new CloudinaryStorage({
   },
 })
 
-const uploadProducts  = multer({ storage: productStorage,  limits: { fileSize: 8 * 1024 * 1024 } })
-const uploadCategory  = multer({ storage: categoryStorage, limits: { fileSize: 5 * 1024 * 1024 } })
-const uploadBrand     = multer({ storage: brandStorage,    limits: { fileSize: 3 * 1024 * 1024 } })
+// Team member photos — square 500px
+const teamStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: '-/team',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+    transformation: [{ width: 500, height: 500, crop: 'fill', quality: 'auto' }],
+  },
+})
 
-module.exports = { cloudinary, uploadProducts, uploadCategory, uploadBrand }
+// Achievement / blog post images — wide 1200px
+const achievementStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: '-/achievements',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+    transformation: [{ width: 1200, quality: 'auto' }],
+  },
+})
+
+// About page hero/cover image — wide 1600px
+const aboutStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: '-/about',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+    transformation: [{ width: 1600, quality: 'auto' }],
+  },
+})
+
+const uploadProducts    = multer({ storage: productStorage,     limits: { fileSize: 8 * 1024 * 1024 } })
+const uploadCategory    = multer({ storage: categoryStorage,    limits: { fileSize: 5 * 1024 * 1024 } })
+const uploadBrand       = multer({ storage: brandStorage,       limits: { fileSize: 3 * 1024 * 1024 } })
+const uploadTeam        = multer({ storage: teamStorage,        limits: { fileSize: 5 * 1024 * 1024 } })
+const uploadAchievement = multer({ storage: achievementStorage, limits: { fileSize: 8 * 1024 * 1024 } })
+const uploadAbout       = multer({ storage: aboutStorage,       limits: { fileSize: 8 * 1024 * 1024 } })
+
+module.exports = { cloudinary, uploadProducts, uploadCategory, uploadBrand, uploadTeam, uploadAchievement, uploadAbout }
