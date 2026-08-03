@@ -361,7 +361,7 @@ export default function HomePage() {
           eyebrow="Vient d'arriver"
           title="Derniers Produits"
           sub="Nouveaux arrivages dans notre catalogue — soyez le premier à les obtenir"
-          linkTo="/products?sort=newest"
+          linkTo="/products?isNewArrival=true"
           linkLabel="Voir toutes les nouveautés"
         />
         <ProductSlider products={latest} loading={loadingLatest} />

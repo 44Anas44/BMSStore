@@ -52,6 +52,8 @@ export default function ProductsPage() {
     maxPrice: searchParams.get('maxPrice') || '',
     sort:     searchParams.get('sort')     || 'default',
     search:   searchParams.get('search')   || '',
+    isPromo:      searchParams.get('isPromo')      || '',
+    isNewArrival: searchParams.get('isNewArrival') || '',
   })
 
   useEffect(() => {
@@ -78,7 +80,7 @@ export default function ProductsPage() {
 
   useEffect(() => { load() }, [load])
 
-  const clear = () => { setFilters({ category:'', brand:'', minPrice:'', maxPrice:'', sort:'default', search:'' }); setSearchParams({}, { replace:true }) }
+  const clear = () => { setFilters({ category:'', brand:'', minPrice:'', maxPrice:'', sort:'default', search:'', isPromo:'', isNewArrival:'' }); setSearchParams({}, { replace:true }) }
 
   const activeFilters = Object.entries(filters).filter(([k,v]) => v && v !== 'default' && k !== 'sort').length
 

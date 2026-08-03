@@ -4,11 +4,12 @@ const verifyToken = require('../middleware/auth')
 const { uploadProducts } = require('../lib/cloudinary')
 
 router.get('/', async (req, res) => {
-  const { category, brand, minPrice, maxPrice, sort, search, isPromo, all, page = 1, limit = 20 } = req.query
+  const { category, brand, minPrice, maxPrice, sort, search, isPromo, isNewArrival, all, page = 1, limit = 20 } = req.query
   const filter = all === 'true' ? {} : { isSecondHand: { $ne: true } }
   if (category) filter.category = category
   if (brand) filter.brand = brand
   if (isPromo === 'true') filter.isPromo = true
+  if (isNewArrival === 'true') filter.isNewArrival = true
   if (minPrice || maxPrice) filter.price = {}
   if (minPrice) filter.price.$gte = +minPrice
   if (maxPrice) filter.price.$lte = +maxPrice

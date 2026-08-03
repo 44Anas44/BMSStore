@@ -143,7 +143,7 @@ export default function Header() {
 
   const navItems = [
     { label: 'Accueil',         to: '/' },
-    { label: 'Nouveautés', to: '/products?sort=newest' },
+    { label: 'Nouveautés', to: '/products?isNewArrival=true' },
     { label: 'Promotions',        to: '/products?isPromo=true' },
     ...(HAS_SECONDHAND  ? [{ label: 'Seconde Main',  to: '/secondhand'  }] : []),
     ...(HAS_DIAGNOSTICS ? [{ label: 'Suivi Réparation', to: '/diagnostics' }] : []),
@@ -153,7 +153,7 @@ export default function Header() {
   const mobileNavItems = [
     { label: 'Accueil',         to: '/' },
     { label: 'Tous les Produits', to: '/products' },
-    { label: 'Nouveautés', to: '/products?sort=newest' },
+    { label: 'Nouveautés', to: '/products?isNewArrival=true' },
     { label: 'Promotions',        to: '/products?isPromo=true' },
     ...(HAS_SECONDHAND  ? [{ label: 'Seconde Main',  to: '/secondhand'  }] : []),
     ...(HAS_DIAGNOSTICS ? [{ label: 'Suivi Réparation', to: '/diagnostics' }] : []),
