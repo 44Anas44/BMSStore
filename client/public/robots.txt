@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /cart
 
-Sitemap: https://bms-store-ruby.vercel.app/sitemap.xml
+Sitemap: https://bms-it.tn/sitemap.xml
