@@ -97,11 +97,13 @@ export default function ProductCard({ product }) {
 
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginTop: 'auto', marginBottom: 12 }}>
           <span style={{ fontWeight: 800, fontSize: 18, color: '#f97316' }}>
-            {product.price.toFixed(2)} TND
+            *****
+            {/*{product.price.toFixed(2)} TND*/}
           </span>
           {product.comparePrice > product.price && (
             <span style={{ textDecoration: 'line-through', color: '#ccc', fontSize: 13 }}>
-              {product.comparePrice.toFixed(2)}
+              *****
+              {/*{product.comparePrice.toFixed(2)}*/}
             </span>
           )}
         </div>
