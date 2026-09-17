@@ -35,9 +35,9 @@ export default function ProductPage() {
           <h1 style={{ fontSize: 30, fontWeight: 800, marginBottom: 12 }}>{product.name}</h1>
           <p style={{ color: '#555', marginBottom: 20, lineHeight: 1.7 }}>{product.description}</p>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 24 }}>
-            <span style={{ fontSize: 32, fontWeight: 800, color: 'var(--primary)' }}>{product.price.toFixed(2)} TND</span>
+            <span style={{ fontSize: 32, fontWeight: 800, color: 'var(--primary)' }}>{/*{product.price.toFixed(2)} TND*/}*****</span>
             {product.comparePrice > product.price && (
-              <span style={{ textDecoration: 'line-through', color: '#bbb', fontSize: 18 }}>{product.comparePrice.toFixed(2)}</span>
+              <span style={{ textDecoration: 'line-through', color: '#bbb', fontSize: 18 }}>{/*{product.comparePrice.toFixed(2)}*/}*****</span>
             )}
           </div>
           <p style={{ fontSize: 13, color: '#888', marginBottom: 6 }}>Catégorie : {product.category?.name || '—'}</p>
