@@ -22,6 +22,7 @@ export default function AdminImport() {
   const [update, setUpdate]     = useState(false)
   const [busy, setBusy]         = useState(false)
   const [result, setResult]     = useState(null)
+  const [delImgs, setDelImgs]   = useState(true)   // only delete products without images
 
   const onFile = async (e) => {
     const file = e.target.files[0]
@@ -52,6 +53,23 @@ export default function AdminImport() {
       })
       setResult(r)
       toast.success(dryRun ? 'Preview ready (nothing saved)' : `Imported ${r.created} products`)
+    } catch (err) {
+      toast.error('Failed: ' + (err.response?.data?.error || err.message))
+    } finally { setBusy(false) }
+  }
+
+  const removeProducts = async () => {
+    if (!category.trim()) return toast.error('Enter the category name')
+    setBusy(true)
+    try {
+      const payload = { categoryName: category, onlyWithoutImages: delImgs }
+      const { matched } = await importApi.remove({ ...payload, dryRun: true })
+      if (!matched) { toast('Nothing to delete in “' + category + '”'); return }
+      const ok = window.confirm(`Delete ${matched} product(s) from “${category}”${delImgs ? ' that have no images' : ''}?\n\nThis cannot be undone.`)
+      if (!ok) return
+      const r = await importApi.remove({ ...payload, confirm: 'DELETE' })
+      setResult(null)
+      toast.success(`Deleted ${r.deleted} products`)
     } catch (err) {
       toast.error('Failed: ' + (err.response?.data?.error || err.message))
     } finally { setBusy(false) }
@@ -106,6 +124,20 @@ export default function AdminImport() {
           )}
         </div>
       )}
+
+      <div style={{ marginTop: 36, paddingTop: 20, borderTop: '1px solid #eee' }}>
+        <h2 style={{ fontSize: 15, fontWeight: 700, marginBottom: 6, color: '#b91c1c' }}>Delete imported products</h2>
+        <p style={{ fontSize: 13, color: '#888', marginBottom: 12 }}>
+          Removes products in the category above (“{category}”). Products that were ever sold are never deleted.
+        </p>
+        <label style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: 13, marginBottom: 14 }}>
+          <input type="checkbox" checked={delImgs} onChange={e => setDelImgs(e.target.checked)} />
+          Only products that have no images
+        </label>
+        <button style={{ ...btn(false), borderColor: '#fca5a5', color: '#b91c1c' }} disabled={busy} onClick={removeProducts}>
+          Delete products…
+        </button>
+      </div>
     </div>
   )
 }
