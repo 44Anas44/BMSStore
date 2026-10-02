@@ -17,6 +17,9 @@ const EyeIcon = () => (
   </svg>
 )
 
+// How many lines of the product name to show (long names are cut with …). Use 1 for a single line.
+const NAME_LINES = 2
+
 // Self-contained placeholder (no external service): same 4:3 shape as real photos
 const placeholder = (label = '') => 'data:image/svg+xml;utf8,' + encodeURIComponent(
   `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect width="400" height="300" fill="#f7f7f7"/><g fill="none" stroke="#d2d2d2" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><rect x="130" y="85" width="140" height="90" rx="8"/><path d="M105 198h190"/></g><text x="200" y="245" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-weight="700" fill="#b8b8b8">${String(label).replace(/[<>&]/g, '')}</text></svg>`
@@ -85,20 +88,19 @@ export default function ProductCard({ product }) {
       </Link>
 
       <div style={{ padding: '14px 16px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-        {product.brand?.name && (
-          <p style={{ fontSize: 11, color: '#aaa', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>
-            {product.brand.name}
-          </p>
-        )}
-        <Link to={`/products/${product._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-          <p style={{ fontWeight: 600, fontSize: 14.5, lineHeight: 1.4, marginBottom: 10, color: '#1a1a1a', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+        {/* Fixed-height slots: every card lays out identically, whatever data it has */}
+        <p style={{ height: 16, lineHeight: '16px', fontSize: 11, color: '#aaa', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          {product.brand?.name || '\u00A0'}
+        </p>
+        <Link to={`/products/${product._id}`} title={product.name} style={{ textDecoration: 'none', color: 'inherit' }}>
+          <p style={{ fontWeight: 600, fontSize: 14.5, lineHeight: 1.4, height: `${NAME_LINES * 1.4}em`, marginBottom: 10, color: '#1a1a1a', display: '-webkit-box', WebkitLineClamp: NAME_LINES, WebkitBoxOrient: 'vertical', overflow: 'hidden', wordBreak: 'break-word' }}>
             {product.name}
           </p>
         </Link>
 
-        {product.category?.name && (
-          <p style={{ fontSize: 11, color: '#bbb', marginBottom: 10 }}>{product.category.name}</p>
-        )}
+        <p style={{ height: 16, lineHeight: '16px', fontSize: 11, color: '#bbb', marginBottom: 10, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          {product.category?.name || '\u00A0'}
+        </p>
 
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginTop: 'auto', marginBottom: 12 }}>
           <span style={{ fontWeight: 800, fontSize: 18, color: '#f97316' }}>
