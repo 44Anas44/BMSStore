@@ -16,6 +16,7 @@ import AdminProducts   from './pages/admin/AdminProducts'
 import AdminOrders     from './pages/admin/AdminOrders'
 import AdminCategories from './pages/admin/AdminCategories'
 import AdminSlides     from './pages/admin/AdminSlides'
+import AdminImport     from './pages/admin/AdminImport'
 import { useAuthStore } from './store/authStore'
 import { Navigate }    from 'react-router-dom'
 
@@ -34,6 +35,7 @@ export default function App() {
       <Route path="admin/orders"     element={<ProtectedAdmin><AdminLayout><AdminOrders /></AdminLayout></ProtectedAdmin>} />
       <Route path="admin/categories" element={<ProtectedAdmin><AdminLayout><AdminCategories /></AdminLayout></ProtectedAdmin>} />
       <Route path="admin/slides"     element={<ProtectedAdmin><AdminLayout><AdminSlides /></AdminLayout></ProtectedAdmin>} />
+      <Route path="admin/import" element={<ProtectedAdmin><AdminLayout><AdminImport /></AdminLayout></ProtectedAdmin>} />
 
       {/* Store routes */}
       <Route path="/*" element={
