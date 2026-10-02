@@ -1,7 +1,9 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import ProductCard from '../components/ProductCard'
 import { productsApi, categoriesApi, brandsApi } from '../lib/api'
+
+const PAGE_SIZE = 24   // products loaded per click on "Afficher plus"
 
 const inp = { width:'100%', padding:'9px 12px', border:'1px solid #e5e5e5', borderRadius:8, fontSize:13, fontFamily:'inherit', outline:'none', background:'#fff', color:'#1a1a1a', boxSizing:'border-box' }
 const lbl = { display:'block', fontSize:11, fontWeight:600, color:'#aaa', textTransform:'uppercase', letterSpacing:0.6, marginBottom:6 }
@@ -45,6 +47,10 @@ export default function ProductsPage() {
   const [brands,     setBrands]     = useState([])
   const [loading,    setLoading]    = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [page,        setPage]        = useState(1)
+  const [pages,       setPages]       = useState(1)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const reqId = useRef(0)   // ignores answers from outdated requests (e.g. filter changed meanwhile)
   const [filters, setFilters] = useState({
     category: searchParams.get('category') || '',
     brand:    searchParams.get('brand')    || '',
@@ -69,14 +75,33 @@ export default function ProductsPage() {
     setSearchParams(p, { replace: true })
   }
 
-  const load = useCallback(() => {
-    setLoading(true)
+  const query = useCallback((pageNum) => {
     const params = Object.fromEntries(Object.entries(filters).filter(([,v]) => v && v !== 'default'))
-    productsApi.getAll(params)
-      .then(d => { setProducts(d.products); setTotal(d.total) })
-      .catch(console.error)
-      .finally(() => setLoading(false))
+    return productsApi.getAll({ ...params, page: pageNum, limit: PAGE_SIZE })
   }, [filters])
+
+  const load = useCallback(() => {
+    const id = ++reqId.current
+    setLoading(true)
+    query(1)
+      .then(d => { if (id !== reqId.current) return; setProducts(d.products); setTotal(d.total); setPage(1); setPages(d.pages || 1) })
+      .catch(console.error)
+      .finally(() => { if (id === reqId.current) setLoading(false) })
+  }, [query])
+
+  const loadMore = () => {
+    const id = reqId.current
+    setLoadingMore(true)
+    query(page + 1)
+      .then(d => {
+        if (id !== reqId.current) return
+        // append, skipping anything already on screen
+        setProducts(prev => { const seen = new Set(prev.map(p => p._id)); return [...prev, ...d.products.filter(p => !seen.has(p._id))] })
+        setPage(page + 1); setPages(d.pages || pages); setTotal(d.total)
+      })
+      .catch(console.error)
+      .finally(() => setLoadingMore(false))
+  }
 
   useEffect(() => { load() }, [load])
 
@@ -137,9 +162,20 @@ export default function ProductsPage() {
               <button onClick={clear} style={{ marginTop:12, background:'none', border:'1px solid #ddd', borderRadius:8, padding:'8px 20px', cursor:'pointer', fontSize:13, fontFamily:'inherit', color:'#888' }}>Clear Filters</button>
             </div>
           ) : (
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(170px,1fr))', gap:16 }}>
-              {products.map(p => <ProductCard key={p._id} product={p}/>)}
-            </div>
+            <>
+              <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(170px,1fr))', gap:16 }}>
+                {products.map(p => <ProductCard key={p._id} product={p}/>)}
+              </div>
+              {page < pages && (
+                <div style={{ textAlign:'center', marginTop:28 }}>
+                  <p style={{ fontSize:12, color:'#aaa', marginBottom:10 }}>{products.length} sur {total} produits</p>
+                  <button onClick={loadMore} disabled={loadingMore}
+                    style={{ padding:'11px 28px', borderRadius:10, border:'1px solid #ddd', background:'#fff', color:'#333', fontWeight:700, fontSize:14, fontFamily:'inherit', cursor: loadingMore ? 'wait' : 'pointer', opacity: loadingMore ? 0.6 : 1 }}>
+                    {loadingMore ? 'Chargement...' : 'Afficher plus'}
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
