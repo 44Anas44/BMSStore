@@ -95,6 +95,10 @@ export const uploadApi = {
   deleteImage: (publicId) => api.delete(`/upload/image/${encodeURIComponent(publicId)}`).then(r => r.data),
 }
 
+   export const importApi = {
+     products: (payload) => api.post('/import/products', payload).then(r => r.data),
+   }
+
 export const adminApi = {
   getDashboard: () => api.get('/admin/dashboard').then(r => r.data),
 }
