@@ -22,14 +22,17 @@ router.get('/', async (req, res) => {
     'popular':    { sold: -1 },
     'default':    { createdAt: -1 }
   }
-  const sortObj = sortMap[sort] || sortMap.default
-  const skip = (+page - 1) * +limit
+  // _id as tie-breaker: products created in the same instant (e.g. bulk import) keep a stable order across pages
+  const sortObj = { ...(sortMap[sort] || sortMap.default), _id: -1 }
+  const lim = Math.min(Math.max(parseInt(limit) || 20, 1), 100)
+  const pg  = Math.max(parseInt(page) || 1, 1)
+  const skip = (pg - 1) * lim
   const [products, total] = await Promise.all([
-    Product.find(filter).sort(sortObj).skip(skip).limit(+limit)
+    Product.find(filter).sort(sortObj).skip(skip).limit(lim)
       .populate('category', 'name').populate('brand', 'name'),
     Product.countDocuments(filter)
   ])
-  res.json({ products, total, pages: Math.ceil(total / +limit) })
+  res.json({ products, total, pages: Math.ceil(total / lim) })
 })
 
 // Latest — most recently added (regardless of flags)
