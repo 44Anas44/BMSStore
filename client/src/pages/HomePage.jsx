@@ -214,7 +214,7 @@ function ProductSlider({ products, loading }) {
                 backgroundSize: '200% 100%', animation: 'shimmer 1.4s infinite', scrollSnapAlign: 'start' }}/>
             ))
           : products.slice(0, 8).map(p => (
-              <div key={p._id} style={{ minWidth: 220, flexShrink: 0, scrollSnapAlign: 'start' }}>
+              <div key={p._id} style={{ flex: '0 0 220px', width: 220, scrollSnapAlign: 'start' }}>
                 <ProductCard product={p}/>
               </div>
             ))
