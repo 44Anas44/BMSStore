@@ -115,4 +115,26 @@ router.post('/products', verifyAuth, async (req, res) => {
   })
 })
 
+// DELETE /api/import/products — admin only
+// Removes products of one category that have NO images and were never sold.
+// body: { categoryName, onlyWithoutImages? (default true), dryRun?, confirm:'DELETE' }
+router.delete('/products', verifyAuth, async (req, res) => {
+  const b = req.body || {}
+  const name = typeof b.categoryName === 'string' ? b.categoryName.trim() : ''
+  if (!name) return res.status(400).json({ error: 'categoryName required' })
+
+  const category = await Category.findOne({ name: ci(name) })
+  if (!category) return res.json({ matched: 0, deleted: 0, note: 'Category not found' })
+
+  const filter = { category: category._id, sold: 0 }
+  if (b.onlyWithoutImages !== false) filter.$or = [{ images: { $size: 0 } }, { images: { $exists: false } }]
+
+  const matched = await Product.countDocuments(filter)
+  if (b.dryRun === true) return res.json({ dryRun: true, matched, deleted: 0 })
+  if (b.confirm !== 'DELETE') return res.status(400).json({ error: 'Send confirm: "DELETE" to proceed' })
+
+  const r = await Product.deleteMany(filter)
+  res.json({ matched, deleted: r.deletedCount })
+})
+
 module.exports = router
