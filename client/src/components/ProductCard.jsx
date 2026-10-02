@@ -17,10 +17,15 @@ const EyeIcon = () => (
   </svg>
 )
 
+// Self-contained placeholder (no external service): same 4:3 shape as real photos
+const placeholder = (label = '') => 'data:image/svg+xml;utf8,' + encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect width="400" height="300" fill="#f7f7f7"/><g fill="none" stroke="#d2d2d2" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><rect x="130" y="85" width="140" height="90" rx="8"/><path d="M105 198h190"/></g><text x="200" y="245" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-weight="700" fill="#b8b8b8">${String(label).replace(/[<>&]/g, '')}</text></svg>`
+)
+
 export default function ProductCard({ product }) {
   const addItem = useCartStore(s => s.addItem)
   const [hovered, setHovered] = useState(false)
-  const img = product.images?.[0] || 'https://placehold.co/400x400/f0f0f0/aaaaaa?text=No+Image'
+  const img = product.images?.[0] || placeholder(product.brand?.name)
   const img2 = product.images?.[1]
   const discount = product.comparePrice > product.price
     ? Math.round((1 - product.price / product.comparePrice) * 100) : null
