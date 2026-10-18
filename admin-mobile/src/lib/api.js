@@ -61,7 +61,7 @@ export const diagnosticsApi = {
 export const uploadApi = {
   productImages: async (uris) => {
     const fd = new FormData()
-    uris.forEach((uri, i) => fd.append('images', { uri, name: `img${i}.jpg`, type: 'image/jpeg' }))
+    uris.forEach((uri, i) => fd.append('images[]', {uri, name: `img${i}.jpg`, type: 'image/jpeg' }))
     return api.post('/upload/product-images', fd, { headers: { 'Content-Type': 'multipart/form-data' } }).then(r => r.data)
   },
   categoryImage: async (uri) => {
