@@ -70,7 +70,7 @@ export const uploadApi = {
   // Product images — up to 5 files
   productImages: (files) => {
     const f = new FormData()
-    ;[...files].forEach(file => f.append('images', file))
+    ;[...files].forEach(file => f.append('images[]', file)
     return api.post('/upload/product-images', f).then(r => r.data)
   },
   // Single product image
