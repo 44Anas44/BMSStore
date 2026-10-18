@@ -234,7 +234,7 @@ export default function AdminProducts() {
               </div>
 
               <div style={{ display:'flex', gap:20, marginBottom:24, padding:'14px 16px', background:'#fafafa', borderRadius:10 }}>
-                {([...[ ['isPromo','On Promo'],['isFeatured','Featured'],['isNewArrival','New Arrival'] ], ...(cfg.features?.secondHand ? [['isSecondHand','Second Hand']] : [])]).map(([k,l]) => (
+                {([...[ ['isPromo','On Promo'],['isFeatured','Featured'],['isNewArrival','New Arrival'] ], ...(   import.meta.env.VITE_FEATURE_SECONDHAND === 'true'? [['isSecondHand','Second Hand']] : [])]).map(([k,l]) => (
                   <label key={k} style={{ display:'flex', alignItems:'center', gap:8, fontSize:14, cursor:'pointer', userSelect:'none' }}>
                     <input type="checkbox" checked={!!form[k]} onChange={e => setForm(f => ({...f, [k]:e.target.checked}))}
                       style={{ width:16, height:16, cursor:'pointer', accentColor:'#f8f8f4' }}/>
