@@ -48,7 +48,7 @@ export const ordersApi = {
 export const uploadApi = {
   productImages: (files) => {
     const f = new FormData()
-    ;[...files].forEach(file => f.append('images', file))
+    ;[...files].forEach(file => f.append('images[]', file)
     return api.post('/upload/product-images', f).then(r => r.data)
   },
   categoryImage: (file) => {
