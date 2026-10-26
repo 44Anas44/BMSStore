@@ -19,6 +19,7 @@ api.interceptors.request.use((config) => {
 export const productsApi = {
   getAll:     (params) => api.get('/products', { params }).then(r => r.data),
   getById:    (id)     => api.get(`/products/${id}`).then(r => r.data),
+  getFacets:  (params) => api.get('/products/facets', { params }).then(r => r.data),
   getLatest:  ()       => api.get('/products/latest').then(r => r.data),
   getFeatured:()       => api.get('/products/featured').then(r => r.data),
   getPromos:  ()       => api.get('/products/promos').then(r => r.data),
@@ -27,6 +28,11 @@ export const productsApi = {
   create:     (data)   => api.post('/products', data).then(r => r.data),
   update:     (id,data)=> api.put(`/products/${id}`, data).then(r => r.data),
   delete:     (id)     => api.delete(`/products/${id}`).then(r => r.data),
+}
+
+// Spec fields (processeur, mémoire…) defined for a category, with suggested values
+export const specsApi = {
+  fields: (category) => api.get('/specs/fields', { params: category ? { category } : {} }).then(r => r.data),
 }
 
 export const categoriesApi = {
