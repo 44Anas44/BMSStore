@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { productsApi, categoriesApi, brandsApi, uploadApi } from '../../lib/api'
+import React, { useEffect, useMemo, useState } from 'react'
+import { productsApi, categoriesApi, brandsApi, uploadApi, specsApi } from '../../lib/api'
 import toast from 'react-hot-toast'
 
-const EMPTY = { name:'', description:'', price:'', comparePrice:'', stock:'', images:[], category:'', brand:'', isPromo:false, isFeatured:false, isNewArrival:false, isSecondHand:false }
+const EMPTY = { name:'', description:'', price:'', comparePrice:'', stock:'', images:[], category:'', brand:'', isPromo:false, isFeatured:false, isNewArrival:false, isSecondHand:false, specs:{} }
 
 const F = ({ label, children }) => (
   <div>
@@ -22,6 +22,31 @@ export default function AdminProducts() {
   const [uploading, setUploading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [search, setSearch] = useState('')
+  const [specFields, setSpecFields] = useState([])   // caractéristiques defined for the selected category
+
+  // categories as "Informatique › Ordinateur Portable › Pc Portable", sorted — easier to pick from than a flat list of 280
+  const categoryOptions = useMemo(() => {
+    const byId = Object.fromEntries(categories.map(c => [c._id, c]))
+    const label = (c, depth = 0) => (c.parent && byId[c.parent._id] && depth < 6) ? `${label(byId[c.parent._id], depth + 1)} › ${c.name}` : c.name
+    return categories.map(c => ({ _id: c._id, label: label(c) })).sort((a, b) => a.label.localeCompare(b.label, 'fr'))
+  }, [categories])
+
+  useEffect(() => {
+    if (!modal || !form.category) { setSpecFields([]); return }
+    let cancelled = false
+    specsApi.fields(form.category).then(d => {
+      if (cancelled) return
+      const fields = d.fields || []
+      setSpecFields(fields)
+      // drop values that belong to the previous category's fields (e.g. "processeur" on a monitor)
+      const keep = new Set(fields.map(f => f.key))
+      setForm(f => {
+        const specs = Object.fromEntries(Object.entries(f.specs || {}).filter(([k]) => keep.has(k)))
+        return Object.keys(specs).length === Object.keys(f.specs || {}).length ? f : { ...f, specs }
+      })
+    }).catch(() => { if (!cancelled) setSpecFields([]) })
+    return () => { cancelled = true }
+  }, [modal, form.category])
 
   const load = () => productsApi.getAll({ limit: 200, all: 'true' }).then(d => setProducts(d.products)).catch(console.error)
   useEffect(() => {
@@ -31,7 +56,7 @@ export default function AdminProducts() {
   }, [])
 
   const openAdd  = () => { setForm(EMPTY); setModal('add') }
-  const openEdit = p  => { setForm({ ...p, category: p.category?._id || '', brand: p.brand?._id || '' }); setModal('edit') }
+  const openEdit = p  => { setForm({ ...p, category: p.category?._id || '', brand: p.brand?._id || '', specs: p.specs || {} }); setModal('edit') }
 
   const handleImages = async (files) => {
     if (!files.length) return
@@ -58,6 +83,7 @@ export default function AdminProducts() {
         isPromo: !!form.isPromo,
         isFeatured: !!form.isFeatured,
         isNewArrival: !!form.isNewArrival,
+        specs: form.specs || {},
       }
       if (form.category) data.category = form.category
       if (form.brand) data.brand = form.brand
@@ -191,7 +217,7 @@ export default function AdminProducts() {
                 <F label="Category">
                   <select style={{ ...inp }} value={form.category} onChange={e => setForm(f => ({...f, category:e.target.value}))}>
                     <option value="">— None —</option>
-                    {categories.map(c => <option key={c._id} value={c._id}>{c.parent ? '  └ ' : ''}{c.name}</option>)}
+                    {categoryOptions.map(c => <option key={c._id} value={c._id}>{c.label}</option>)}
                   </select>
                 </F>
                 <div style={{ gridColumn:'1/-1' }}>
@@ -202,6 +228,21 @@ export default function AdminProducts() {
                     </select>
                   </F>
                 </div>
+                {specFields.length > 0 && (
+                  <div style={{ gridColumn:'1/-1', border:'1px solid #f0e6ee', borderRadius:10, padding:'12px 14px', background:'#fdfafc' }}>
+                    <label style={{ display:'block', fontSize:11, fontWeight:700, color:'#9c155f', textTransform:'uppercase', letterSpacing:0.5, marginBottom:10 }}>Caractéristiques</label>
+                    <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))', gap:10 }}>
+                      {specFields.map(sf => (
+                        <F key={sf.key} label={sf.label}>
+                          <input style={inp} list={`spec-${sf.key}`} value={form.specs?.[sf.key] || ''} placeholder="—"
+                            onChange={e => setForm(f => ({ ...f, specs: { ...(f.specs || {}), [sf.key]: e.target.value } }))}/>
+                          <datalist id={`spec-${sf.key}`}>{(sf.options || []).map(o => <option key={o} value={o}/>)}</datalist>
+                        </F>
+                      ))}
+                    </div>
+                    <p style={{ fontSize:11, color:'#aaa', marginTop:8 }}>Choisissez une valeur suggérée ou tapez la vôtre. Ces valeurs alimentent les filtres de la page produits.</p>
+                  </div>
+                )}
                 <div style={{ gridColumn:'1/-1' }}>
                   <F label="Description">
                     <textarea style={{ ...inp, minHeight:80, resize:'vertical' }} value={form.description} onChange={e => setForm(f => ({...f, description:e.target.value}))} placeholder="Product description..."/>
