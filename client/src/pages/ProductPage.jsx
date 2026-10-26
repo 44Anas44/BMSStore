@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { productsApi } from '../lib/api'
+import { productsApi, specsApi } from '../lib/api'
 import { useCartStore } from '../store/cartStore'
 import toast from 'react-hot-toast'
 
@@ -10,10 +10,24 @@ export default function ProductPage() {
   const [imgIdx, setImgIdx] = useState(0)
   const [qty, setQty] = useState(1)
   const addItem = useCartStore(s => s.addItem)
+  const [specMeta, setSpecMeta] = useState(null)   // labels + display order of the specs (null until loaded)
 
   useEffect(() => { productsApi.getById(id).then(setProduct).catch(console.error) }, [id])
+  useEffect(() => {
+    if (!product) return
+    if (!product.category?._id) { setSpecMeta({ fields: [], labels: {} }); return }
+    specsApi.fields(product.category._id)
+      .then(d => setSpecMeta({ fields: d.fields || [], labels: d.labels || {} }))
+      .catch(() => setSpecMeta({ fields: [], labels: {} }))
+  }, [product])
 
   if (!product) return <div style={{ textAlign: 'center', padding: 80 }}>Loading...</div>
+  // caractéristiques: the category's own fields first (in their usual order), then anything else that was entered
+  const specs = product.specs || {}
+  const meta = specMeta || { fields: [], labels: {} }
+  const ordered = meta.fields.map(f => f.key).filter(k => specs[k])
+  const specRows = !specMeta ? [] : [...ordered, ...Object.keys(specs).filter(k => !ordered.includes(k) && specs[k])]
+    .map(k => ({ key: k, label: meta.fields.find(f => f.key === k)?.label || meta.labels[k] || k.replace(/_/g, ' '), value: specs[k] }))
   const imgs = product.images?.length ? product.images : ['https://placehold.co/600x600?text=No+Image']
 
   return (
@@ -70,6 +84,22 @@ export default function ProductPage() {
           )}
         </div>
       </div>
+
+      {specRows.length > 0 && (
+        <div style={{ marginTop: 40 }}>
+          <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 14 }}>Caractéristiques</h2>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+            <tbody>
+              {specRows.map((r, i) => (
+                <tr key={r.key} style={{ background: i % 2 ? '#fff' : '#faf7fa' }}>
+                  <td style={{ padding: '10px 14px', width: '38%', color: '#777', fontWeight: 600, borderBottom: '1px solid #f0e6ee' }}>{r.label}</td>
+                  <td style={{ padding: '10px 14px', color: '#222', borderBottom: '1px solid #f0e6ee' }}>{r.value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   )
 }
