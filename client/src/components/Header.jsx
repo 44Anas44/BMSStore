@@ -223,6 +223,11 @@ export default function Header() {
         .hdr-mega-right{flex:1;padding:24px 28px;overflow-y:auto}
         .hdr-mega-right-title{font-size:15px;font-weight:800;color:#9c155f;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid #f97316;display:flex;align-items:center;gap:8px}
         .hdr-mega-subs{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:4px 12px}
+        .hdr-mega-groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:20px 24px;align-items:start}
+        .hdr-mega-group{min-width:0}
+        .hdr-mega-group-title{display:block;font-size:13.5px;font-weight:700;color:#2d2d2d;text-decoration:none;padding:6px 10px;margin-bottom:4px;border-bottom:1px solid #f0e6ee;transition:color .12s}
+        .hdr-mega-group-title:hover{color:#9c155f}
+        .hdr-mega-sub3{padding:5px 10px;font-size:12.5px;color:#666}
         .hdr-mega-sub{display:flex;align-items:center;gap:7px;padding:8px 10px;border-radius:8px;text-decoration:none;color:#444;font-size:13px;transition:background .12s,color .12s}
         .hdr-mega-sub:hover{background:#fff4ee;color:#f97316}
         .hdr-mega-sub-dot{width:5px;height:5px;border-radius:50%;background:#ddd;flex-shrink:0;transition:background .12s}
@@ -391,13 +396,24 @@ export default function Header() {
                         </div>
                         {subs.length === 0
                           ? <div className="hdr-mega-empty">No subcategories available</div>
-                          : <div className="hdr-mega-subs">
+                          : <div className="hdr-mega-groups">
                               {subs.map(sub => {
-                                const sid = sub._id || sub.id
+                                const sid  = sub._id || sub.id
+                                const subs2 = sub.children || sub.subcategories || []
                                 return (
-                                  <Link key={sid} to={`/products?category=${sid}`} className="hdr-mega-sub" onClick={() => setShowCatMenu(false)}>
-                                    <span className="hdr-mega-sub-dot" />{sub.name}
-                                  </Link>
+                                  <div key={sid} className="hdr-mega-group">
+                                    <Link to={`/products?category=${sid}`} className="hdr-mega-group-title" onClick={() => setShowCatMenu(false)}>
+                                      {sub.name}
+                                    </Link>
+                                    {subs2.map(x => {
+                                      const xid = x._id || x.id
+                                      return (
+                                        <Link key={xid} to={`/products?category=${xid}`} className="hdr-mega-sub hdr-mega-sub3" onClick={() => setShowCatMenu(false)}>
+                                          <span className="hdr-mega-sub-dot" />{x.name}
+                                        </Link>
+                                      )
+                                    })}
+                                  </div>
                                 )
                               })}
                             </div>
@@ -468,12 +484,37 @@ export default function Header() {
                           </span>
                         )}
                       </div>
+                      {isExpanded && (
+                        <Link to={`/products?category=${cid}`} className="hdr-drawer-sub" style={{ fontWeight:700, color:'#9c155f' }} onClick={() => setMenuOpen(false)}>
+                          Voir tout dans {cat.name}
+                        </Link>
+                      )}
                       {isExpanded && catSubs.map(sub => {
-                        const sid = sub._id || sub.id
+                        const sid   = sub._id || sub.id
+                        const subs2 = sub.children || sub.subcategories || []
+                        const subOpen = !!mobileExpandedCats[sid]
                         return (
-                          <Link key={sid} to={`/products?category=${sid}`} className="hdr-drawer-sub" onClick={() => setMenuOpen(false)}>
-                            › {sub.name}
-                          </Link>
+                          <div key={sid}>
+                            <div className="hdr-drawer-sub" style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:8 }}>
+                              <Link to={`/products?category=${sid}`} style={{ flex:1, color:'inherit', textDecoration:'none' }} onClick={() => setMenuOpen(false)}>
+                                › {sub.name}
+                              </Link>
+                              {subs2.length > 0 && (
+                                <button type="button" aria-label="Afficher les sous-catégories" onClick={() => toggleMobileCat(sid)}
+                                  style={{ background:'none', border:'none', padding:'4px 8px', cursor:'pointer', color:'#999', display:'flex' }}>
+                                  <span className={`hdr-drawer-cat-chev${subOpen ? ' open' : ''}`}><ChevronRight /></span>
+                                </button>
+                              )}
+                            </div>
+                            {subOpen && subs2.map(x => {
+                              const xid = x._id || x.id
+                              return (
+                                <Link key={xid} to={`/products?category=${xid}`} className="hdr-drawer-sub" style={{ paddingLeft:64, fontSize:12.5 }} onClick={() => setMenuOpen(false)}>
+                                  – {x.name}
+                                </Link>
+                              )
+                            })}
+                          </div>
                         )
                       })}
                     </div>
