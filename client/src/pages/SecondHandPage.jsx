@@ -130,7 +130,7 @@ export default function SecondHandPage() {
       {/* Layout */}
       <div className="sh-layout" style={{ display:'grid', gridTemplateColumns:'220px 1fr', gap:24, alignItems:'start' }}>
         {/* Sidebar — desktop */}
-        <aside className="sh-sidebar" style={{ position:'sticky', top:80 }}>
+        <aside className="sh-sidebar" style={{ position:'sticky', top:172 }}>
           <FilterPanel filters={filters} categories={categories} brands={brands} set={set} clear={clear} />
         </aside>
 
