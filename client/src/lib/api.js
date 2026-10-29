@@ -30,6 +30,11 @@ export const productsApi = {
   delete:     (id)     => api.delete(`/products/${id}`).then(r => r.data),
 }
 
+// "Demande de devis" form → e-mailed to the sales team
+export const quotesApi = {
+  create: (data) => api.post('/quotes', data).then(r => r.data),
+}
+
 // Spec fields (processeur, mémoire…) defined for a category, with suggested values
 export const specsApi = {
   fields: (category) => api.get('/specs/fields', { params: category ? { category } : {} }).then(r => r.data),
