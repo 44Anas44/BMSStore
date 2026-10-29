@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-const BRAND   = import.meta.env.VITE_BRAND_NAME     || 'BMS Store'
+const BRAND   = 'BMS IT'
 const LOGO    = 'https://res.cloudinary.com/dktehnkms/image/upload/v1777646852/Gemini_Generated_Image_5wzab5wzab5wzab5-removebg-preview_jbjndd.png'
 const ADDRESS = 'Rue El Akkad, Manouba 2010'
 const PHONE   ='+21699960432'
-const EMAIL   = 'bms.informatique@gmail.com'
+const EMAILS  = [
+  { label: 'Commercial', address: 'commercial@bms-it.tn' },
+  { label: 'Technique',  address: 'technique@bms-it.tn' },
+]
 const HOURS   = 'Lun–Ven 8h–17h / sam 8h-13h'
 const IG      = import.meta.env.VITE_INSTAGRAM       || '#'
 const FB      = 'https://www.facebook.com/atef.bms'
@@ -186,15 +189,15 @@ export default function Footer() {
               <PhoneIcon />{PHONE}
             </a>
           )}
-          {EMAIL && (
-            <a href={`mailto:${EMAIL}`}
+          {EMAILS.map(e => (
+            <a key={e.address} href={`mailto:${e.address}`} title={e.label}
               style={{display:'flex',gap:10,alignItems:'flex-start',color:'rgba(255,255,255,0.62)',textDecoration:'none',fontSize:13.5,marginBottom:13,transition:'color .15s'}}
-              onMouseEnter={e => e.currentTarget.style.color='#f97316'}
-              onMouseLeave={e => e.currentTarget.style.color='rgba(255,255,255,0.62)'}
+              onMouseEnter={ev => ev.currentTarget.style.color='#f97316'}
+              onMouseLeave={ev => ev.currentTarget.style.color='rgba(255,255,255,0.62)'}
             >
-              <MailIcon />{EMAIL}
+              <MailIcon />{e.address}
             </a>
-          )}
+          ))}
           {HOURS && <ContactRow icon={<ClockIcon />}>{HOURS}</ContactRow>}
         </div>
       </div>
