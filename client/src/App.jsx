@@ -9,6 +9,7 @@ import CartPage from './pages/CartPage'
 import SecondHandPage  from './pages/SecondHandPage'
 import DiagnosticsPage from './pages/DiagnosticsPage'
 import AboutPage       from './pages/AboutPage'
+import QuotePage       from './pages/QuotePage'
 import AdminLogin      from './pages/admin/AdminLogin'
 import AdminLayout     from './pages/admin/AdminLayout'
 import AdminDashboard  from './pages/admin/AdminDashboard'
@@ -50,6 +51,7 @@ export default function App() {
               <Route path="secondhand"   element={<SecondHandPage/>}/>
               <Route path="diagnostics"  element={<DiagnosticsPage/>}/>
               <Route path="about"        element={<AboutPage/>}/>
+              <Route path="devis"        element={<QuotePage/>}/>
             </Routes>
           </main>
           <Footer />
