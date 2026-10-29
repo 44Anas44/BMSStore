@@ -145,7 +145,7 @@ export default function Header() {
     { label: 'Accueil',         to: '/' },
     { label: 'Nouveautés', to: '/products?isNewArrival=true' },
     { label: 'Promotions',        to: '/products?isPromo=true' },
-    ...(HAS_SECONDHAND  ? [{ label: 'Seconde Main',  to: '/secondhand'  }] : []),
+    ...(HAS_SECONDHAND  ? [{ label: 'Bonne Occasion',  to: '/secondhand'  }] : []),
     ...(HAS_DIAGNOSTICS ? [{ label: 'Suivi Réparation', to: '/diagnostics' }] : []),
     { label: 'À Propos',        to: '/about' },
   ]
@@ -155,7 +155,7 @@ export default function Header() {
     { label: 'Tous les Produits', to: '/products' },
     { label: 'Nouveautés', to: '/products?isNewArrival=true' },
     { label: 'Promotions',        to: '/products?isPromo=true' },
-    ...(HAS_SECONDHAND  ? [{ label: 'Seconde Main',  to: '/secondhand'  }] : []),
+    ...(HAS_SECONDHAND  ? [{ label: 'Bonne Occasion',  to: '/secondhand'  }] : []),
     ...(HAS_DIAGNOSTICS ? [{ label: 'Suivi Réparation', to: '/diagnostics' }] : []),
     { label: 'À Propos',        to: '/about' },
   ]
