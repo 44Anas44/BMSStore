@@ -254,37 +254,6 @@ function PromoBanner({ products }) {
   )
 }
 
-// ─── Newsletter ────────────────────────────────────────────────────────────────
-function Newsletter() {
-  const [email, setEmail] = useState('')
-  const [sent, setSent] = useState(false)
-  return (
-    <section style={{ background: '#f7f7f5', padding: '72px 24px', marginTop: 80 }}>
-      <div style={{ maxWidth: 500, margin: '0 auto', textAlign: 'center' }}>
-        <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--primary)', opacity: 0.55, letterSpacing: 1.2, textTransform: 'uppercase', marginBottom: 10 }}>Stay Updated</p>
-        <h2 style={{ fontSize: 24, fontWeight: 800, letterSpacing: -0.3, marginBottom: 10 }}>Get exclusive deals first</h2>
-        <p style={{ fontSize: 14, color: '#888', marginBottom: 28, lineHeight: 1.6 }}>Abonnez-vous et soyez le premier informé des nouveautés, offres spéciales et ventes flash.</p>
-        {sent ? (
-          <div style={{ background: '#dcfce7', border: '1px solid #86efac', borderRadius: 10, padding: '14px 20px', color: '#166534', fontWeight: 600, fontSize: 14 }}>
-            ✅ Abonné(e) ! Merci de nous rejoindre.
-          </div>
-        ) : (
-          <div style={{ display: 'flex', gap: 8, maxWidth: 420, margin: '0 auto' }}>
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-              placeholder="Votre adresse e-mail"
-              style={{ flex: 1, padding: '12px 16px', border: '1.5px solid #ddd', borderRadius: 10, fontSize: 14, outline: 'none', fontFamily: 'inherit', background: '#fff' }} />
-            <button onClick={() => email.includes('@') && setSent(true)}
-              style={{ background: '#f97316', color: '#fff', border: 'none', borderRadius: 10, padding: '12px 20px', fontWeight: 700, fontSize: 14, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
-              Subscribe
-            </button>
-          </div>
-        )}
-        <p style={{ fontSize: 11, color: '#ccc', marginTop: 12 }}>No spam. Unsubscribe any time.</p>
-      </div>
-    </section>
-  )
-}
-
 // ─── Social strip ──────────────────────────────────────────────────────────────
 function SocialStrip() {
   if (!IG && !FB) return null
@@ -388,8 +357,7 @@ export default function HomePage() {
         <ProductSlider products={popular} loading={loadingPopular} />
       </section>
 
-      <Newsletter />
-      <SocialStrip />
+      <div style={{ marginTop: 72 }}><SocialStrip /></div>
       <div style={{ height: 48 }} />
     </div>
   )
