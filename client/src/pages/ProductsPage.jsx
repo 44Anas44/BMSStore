@@ -289,7 +289,7 @@ export default function ProductsPage() {
       )}
 
       <div className="pr-layout" style={{ display:'grid', gridTemplateColumns:'240px 1fr', gap:24, alignItems:'start' }}>
-        <aside className="pr-sidebar" style={{ position:'sticky', top:80, maxHeight:'calc(100vh - 100px)', overflowY:'auto' }}>
+        <aside className="pr-sidebar" style={{ position:'sticky', top:172, maxHeight:'calc(100vh - 192px)', overflowY:'auto' }}>
           {panel}
         </aside>
 
