@@ -154,20 +154,10 @@ export default function AboutPage() {
   return (
     <div style={{ background: 'var(--bg)' }}>
       <style>{`@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }`}</style>
-      {/* Hero image — falls back to a placeholder box until one is set from the admin app */}
-      {heroImage ? (
+      {/* Hero image — only shown when one is set from the admin app (no placeholder box otherwise) */}
+      {heroImage && (
         <div style={{ height: 320, background: '#f5f5f5' }}>
           <img src={heroImage} alt={BRAND} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-        </div>
-      ) : (
-        <div style={{
-          height: 320, background: 'repeating-linear-gradient(45deg, #eee, #eee 12px, #e6e6e6 12px, #e6e6e6 24px)',
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#aaa',
-        }}>
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
-          </svg>
-          <p style={{ fontSize: 12, fontWeight: 600, marginTop: 10, textTransform: 'uppercase', letterSpacing: 0.8 }}>Image de couverture à venir</p>
         </div>
       )}
       {/* Hero text */}
