@@ -176,8 +176,8 @@ export default function Header() {
         .hdr-main{background:#fff;border-bottom:1px solid #e8eaed;padding:12px 0}
         .hdr-main-inner{max-width:1280px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:16px}
         .hdr-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;flex-shrink:0}
-        .hdr-logo img{height:42px;object-fit:contain}
-        .hdr-logo-name{font-weight:900;font-size:19px;color:#9c155f;letter-spacing:-.5px}
+        .hdr-logo img{height:60px;object-fit:contain}
+        .hdr-logo-name{font-weight:900;font-size:22px;color:#9c155f;letter-spacing:-.5px}
         .hdr-logo-name span{color:#f97316}
         .hdr-search-wrap{flex:1;max-width:680px;position:relative}
         .hdr-search-form{display:flex;width:100%}
@@ -198,6 +198,8 @@ export default function Header() {
         .hdr-suggest-footer{padding:10px 14px;background:#fafafa;text-align:center}
         .hdr-suggest-footer button{background:none;border:none;cursor:pointer;color:#9c155f;font-weight:700;font-size:13px;text-decoration:underline;font-family:inherit}
         .hdr-suggest-info{padding:18px;text-align:center;color:#999;font-size:13px}
+        .hdr-quote{display:flex;align-items:center;gap:8px;background:#fff;color:#f97316;border:2px solid #f97316;border-radius:10px;padding:8px 16px;text-decoration:none;font-weight:700;font-size:13px;white-space:nowrap;flex-shrink:0;transition:background .15s,color .15s}
+        .hdr-quote:hover{background:#f97316;color:#fff}
         .hdr-cart{display:flex;align-items:center;gap:8px;background:#9c155f;color:#fff;border-radius:10px;padding:10px 18px;text-decoration:none;font-weight:700;font-size:13px;flex-shrink:0;transition:background .2s;white-space:nowrap}
         .hdr-cart:hover{background:#f97316}
         .hdr-cart-count{background:#f97316;color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;transition:background .2s}
@@ -258,6 +260,9 @@ export default function Header() {
           .hdr-nav{display:none}
           .hdr-search-wrap{max-width:unset}
           .hdr-cart-label{display:none}
+          .hdr-quote{display:none}
+          .hdr-logo img{height:42px}
+          .hdr-logo-name{font-size:19px}
           .hdr-cart{padding:10px 14px}
           .hdr-top-promo{display:none}
         }
@@ -336,6 +341,11 @@ export default function Header() {
                 </div>
               )}
             </div>
+
+            <Link to="/devis" className="hdr-quote" title="Demander un devis">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+              Demande de devis
+            </Link>
 
             <Link to="/cart" className="hdr-cart" title="Voir le panier">
               <CartIcon />
@@ -523,6 +533,9 @@ export default function Header() {
               </>
             )}
 
+            <Link to="/devis" className="hdr-drawer-link" style={{ color:'#f97316' }} onClick={() => setMenuOpen(false)}>
+              Demande de devis
+            </Link>
             <Link to="/cart" className="hdr-drawer-link" onClick={() => setMenuOpen(false)}>
               Panier {count > 0 && `(${count})`}
             </Link>
