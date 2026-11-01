@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
+import { quotesApi } from '../../lib/api'
 
 const IC = ({ d, size=18 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink:0 }}>
@@ -13,6 +14,7 @@ const NAV = [
   { label:'Products',   to:'/admin/products',   d:'M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z' },
   { label:'Orders',     to:'/admin/orders',     d:'M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0' },
   { label:'Categories', to:'/admin/categories', d:'M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z' },
+  { label:'Devis',      to:'/admin/quotes',     d:'M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M8 13h8M8 17h5', badge:'quotes' },
   { label:'Import',     to:'/admin/import',     d:'M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3' },
   { label:'Slides',     to:'/admin/slides',     d:'M15 10l4.553-2.069A1 1 0 0121 8.82V15.18a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z' },
 ]
@@ -20,6 +22,13 @@ const NAV = [
 export default function AdminLayout({ children }) {
   const loc = useLocation()
   const { logout } = useAuthStore()
+  const [newQuotes, setNewQuotes] = useState(0)     // quote requests nobody has handled yet
+  useEffect(() => {
+    const refresh = () => quotesApi.getAll({ status: 'new', limit: 1 }).then(d => setNewQuotes(d.counts?.new || 0)).catch(() => {})
+    refresh()
+    window.addEventListener('quotes-changed', refresh)
+    return () => window.removeEventListener('quotes-changed', refresh)
+  }, [loc.pathname])
   const isActive = (to) => to === '/admin' ? loc.pathname === '/admin' : loc.pathname.startsWith(to)
 
   return (
@@ -43,6 +52,9 @@ export default function AdminLayout({ children }) {
               }}>
                 <IC d={n.d}/>
                 {n.label}
+                {n.badge === 'quotes' && newQuotes > 0 && (
+                  <span style={{ marginLeft:'auto', background:'#f97316', color:'#fff', borderRadius:20, fontSize:11, fontWeight:700, padding:'1px 8px' }}>{newQuotes}</span>
+                )}
               </Link>
             )
           })}
