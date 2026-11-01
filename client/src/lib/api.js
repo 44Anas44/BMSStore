@@ -32,7 +32,11 @@ export const productsApi = {
 
 // "Demande de devis" form → e-mailed to the sales team
 export const quotesApi = {
-  create: (data) => api.post('/quotes', data).then(r => r.data),
+  create:       (data)       => api.post('/quotes', data).then(r => r.data),
+  // admin
+  getAll:       (params)     => api.get('/quotes', { params }).then(r => r.data),
+  updateStatus: (id, status) => api.patch(`/quotes/${id}/status`, { status }).then(r => r.data),
+  remove:       (id)         => api.delete(`/quotes/${id}`).then(r => r.data),
 }
 
 // Spec fields (processeur, mémoire…) defined for a category, with suggested values
